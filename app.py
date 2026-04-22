@@ -42,6 +42,11 @@ def conectar_google_sheet():
     return sheet
 
 
+def guardar_registro_google_sheet(fila):
+    sheet = conectar_google_sheet()
+    sheet.append_row(fila, value_input_option="USER_ENTERED")
+
+
 class PDF(FPDF):
     def __init__(self):
         super().__init__(orientation='P', unit='mm', format='A4')
