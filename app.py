@@ -503,50 +503,71 @@ if not bloqueo:
     if seguros_activados:
         st.caption(f"**Seguros activados:** {', '.join(seguros_activados)}")
 
-# --- REGISTRO DE DETERMINACIÓN EN CSV ---
-if not bloqueo:
-    st.write("---")
+# --- REGISTRO EN GOOGLE SHEETS ---
+st.write("---")
+
+fecha_hora_actual = datetime.datetime.now(
+    ZoneInfo("America/Argentina/Buenos_Aires")
+).strftime("%Y-%m-%d %H:%M:%S")
+
+if bloqueo:
+    if st.button("Registrar intento bloqueado"):
+        usuario_limpio = usuario.strip() if usuario else ""
+
+        if not usuario_limpio or len(usuario_limpio.split()) < 2:
+            st.error("Debe completar nombre y apellido antes de registrar el intento.")
+        else:
+            fila = [
+                fecha_hora_actual,         # FechaHora
+                usuario_limpio,            # Usuario
+                r1, r2, r3, r4, r5, r6, r7, r8, r9, r10,   # P1 a P10
+                "Sí",                      # Bloqueo
+                motivo_bloqueo,            # Motivo_Bloqueo
+                "",                        # Nivel_Riesgo
+                "",                        # Fundamento
+                "",                        # Seguros_Activados
+                "No",                      # Anexo
+                "No"                       # Checklist
+            ]
+
+            try:
+                guardar_registro_google_sheet(fila)
+                st.success("Intento bloqueado registrado correctamente.")
+                st.caption(f"Usuario: {usuario_limpio}")
+                st.caption(f"Fecha y hora: {fecha_hora_actual}")
+                st.caption(f"Motivo de bloqueo: {motivo_bloqueo}")
+            except Exception as e:
+                st.error(f"Error al registrar en Google Sheets: {e}")
+
+else:
     if st.button("Registrar determinación"):
         usuario_limpio = usuario.strip() if usuario else ""
 
         if not usuario_limpio or len(usuario_limpio.split()) < 2:
             st.error("Debe completar nombre y apellido antes de registrar la determinación.")
         else:
-            registro = {
-                "fecha_hora": datetime.datetime.now(ZoneInfo("America/Argentina/Buenos_Aires")).strftime("%Y-%m-%d %H:%M:%S"),
-                "usuario": usuario_limpio,
-                "P1": r1,
-                "P2": r2,
-                "P3": r3,
-                "P4": r4,
-                "P5": r5,
-                "P6": r6,
-                "P7": r7,
-                "P8": r8,
-                "P9": r9,
-                "P10": r10,
-                "bloqueo": "Sí" if bloqueo else "No",
-                "nivel": nivel,
-                "fundamento": fundamento,
-                "seguros_activados": ", ".join(seguros_activados),
-                "anexo": "Sí" if (not bloqueo and nivel != "Nulo") else "No",
-                "checklist": "Sí" if (not bloqueo and nivel != "Nulo") else "No"
-            }
+            fila = [
+                fecha_hora_actual,                 # FechaHora
+                usuario_limpio,                    # Usuario
+                r1, r2, r3, r4, r5, r6, r7, r8, r9, r10,   # P1 a P10
+                "No",                              # Bloqueo
+                "",                                # Motivo_Bloqueo
+                nivel,                             # Nivel_Riesgo
+                fundamento,                        # Fundamento
+                ", ".join(seguros_activados),      # Seguros_Activados
+                "Sí" if nivel != "Nulo" else "No", # Anexo
+                "Sí" if nivel != "Nulo" else "No"  # Checklist
+            ]
 
-            archivo_log = "registro_determinaciones.csv"
-            existe = os.path.exists(archivo_log)
-
-            with open(archivo_log, mode="a", newline="", encoding="utf-8") as f:
-                writer = csv.DictWriter(f, fieldnames=registro.keys())
-                if not existe:
-                    writer.writeheader()
-                writer.writerow(registro)
-
-            st.success("Determinación registrada correctamente.")
-            st.caption(f"Usuario: {registro['usuario']}")
-            st.caption(f"Fecha y hora: {registro['fecha_hora']}")
-            st.caption(f"Nivel de riesgo: {registro['nivel']}")
-            st.caption(f"Seguros activados: {registro['seguros_activados'] if registro['seguros_activados'] else 'Ninguno'}")
+            try:
+                guardar_registro_google_sheet(fila)
+                st.success("Determinación registrada correctamente.")
+                st.caption(f"Usuario: {usuario_limpio}")
+                st.caption(f"Fecha y hora: {fecha_hora_actual}")
+                st.caption(f"Nivel de riesgo: {nivel}")
+                st.caption(f"Seguros activados: {', '.join(seguros_activados) if seguros_activados else 'Ninguno'}")
+            except Exception as e:
+                st.error(f"Error al registrar en Google Sheets: {e}")
 
 # --- PRUEBA TEMPORAL DE CONEXIÓN A GOOGLE SHEETS ---
 st.write("---")
