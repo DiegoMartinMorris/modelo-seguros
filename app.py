@@ -4,6 +4,8 @@ import datetime
 import os
 import csv
 from zoneinfo import ZoneInfo
+import gspread
+from google.oauth2.service_account import Credentials
 
 # --- CONFIGURACIÓN DE PÁGINA ---
 st.set_page_config(page_title="Determinador de Seguros", layout="centered")
@@ -25,6 +27,17 @@ st.markdown("""
     div.stDownloadButton:nth-of-type(2) button { background-color: #f0f2f6 !important; color: black !important; border: 1px solid #cccccc; }
     </style>
     """, unsafe_allow_html=True)
+
+
+def conectar_google_sheet():
+    scope = ["https://www.googleapis.com/auth/spreadsheets"]
+    creds = Credentials.from_service_account_info(
+        st.secrets["gcp_service_account"], scopes=scope
+    )
+    client = gspread.authorize(creds)
+    sheet = client.open("Registro Modelo Seguros").sheet1
+    return sheet
+
 
 class PDF(FPDF):
     def __init__(self):
@@ -58,7 +71,6 @@ class PDF(FPDF):
         txt_safe = str(body).encode('latin-1', 'replace').decode('latin-1')
         self.multi_cell(0, 6, txt=txt_safe, align='J')
         self.ln(2)
-
 
 
 # --- TEXTOS LEGALES INTEGRALES ---
@@ -236,17 +248,21 @@ p1, p2, p3, p4, p5, p6, p7, p8, p9, p10 = [r == "Sí" for r in [r1, r2, r3, r4, 
 
 # --- VALIDACIONES DE BLOQUEO ---
 bloqueo = False
+motivo_bloqueo = ""
 
 if not p1 and (p3 or p4 or p5 or p6 or p7 or p8 or p9):
-    st.error('Bloqueo detectado: no puede haber condiciones operativas seleccionadas si la respuesta a la Pregunta 1 es "No".')
+    motivo_bloqueo = 'No puede haber condiciones operativas seleccionadas si la respuesta a la Pregunta 1 es "No".'
+    st.error(f"Bloqueo detectado: {motivo_bloqueo}")
     bloqueo = True
 
 if p2 and (p4 or p5 or p6 or p7 or p8 or p9):
-    st.error("Bloqueo detectado: la actividad no puede ser administrativa pura si al mismo tiempo incluye condiciones operativas.")
+    motivo_bloqueo = "La actividad no puede ser administrativa pura si al mismo tiempo incluye condiciones operativas."
+    st.error(f"Bloqueo detectado: {motivo_bloqueo}")
     bloqueo = True
 
 if p6 and (p2 or p4 or p5 or p7 or p8 or p9):
-    st.error('Bloqueo detectado: la actividad no puede clasificarse como trabajo menor si fue marcada simultáneamente con otras condiciones de mayor riesgo.')
+    motivo_bloqueo = "La actividad no puede clasificarse como trabajo menor si fue marcada simultáneamente con otras condiciones de mayor riesgo."
+    st.error(f"Bloqueo detectado: {motivo_bloqueo}")
     bloqueo = True
 
 # --- PIE DE PÁGINA INTERFAZ ---
@@ -304,7 +320,6 @@ if not bloqueo and nivel != "Nulo":
     st.write("---")
     col_btn1, col_btn2 = st.columns(2)
 
-    # --- BOTÓN 1: ANEXO DE SEGUROS ---
     with col_btn1:
         pdf_anexo = PDF()
         pdf_anexo.add_page()
@@ -349,7 +364,6 @@ if not bloqueo and nivel != "Nulo":
             mime="application/pdf"
         )
 
-    # --- BOTÓN 2: CHECKLIST DE CONTROL ---
     with col_btn2:
         req_trcym = p9 and p10
         req_rc_separado = (((p5 or p7 or p8) or (p9 and not p10)) and not req_trcym)
@@ -486,7 +500,7 @@ if not bloqueo:
     if seguros_activados:
         st.caption(f"**Seguros activados:** {', '.join(seguros_activados)}")
 
-# --- REGISTRO DE DETERMINACIÓN ---
+# --- REGISTRO DE DETERMINACIÓN EN CSV ---
 if not bloqueo:
     st.write("---")
     if st.button("Registrar determinación"):
@@ -525,18 +539,14 @@ if not bloqueo:
                     writer.writeheader()
                 writer.writerow(registro)
 
-import gspread
-from google.oauth2.service_account import Credentials
+            st.success("Determinación registrada correctamente.")
+            st.caption(f"Usuario: {registro['usuario']}")
+            st.caption(f"Fecha y hora: {registro['fecha_hora']}")
+            st.caption(f"Nivel de riesgo: {registro['nivel']}")
+            st.caption(f"Seguros activados: {registro['seguros_activados'] if registro['seguros_activados'] else 'Ninguno'}")
 
-def conectar_google_sheet():
-    scope = ["https://www.googleapis.com/auth/spreadsheets"]
-    creds = Credentials.from_service_account_info(
-        st.secrets["gcp_service_account"], scopes=scope
-    )
-    client = gspread.authorize(creds)
-    sheet = client.open("Registro Modelo Seguros").sheet1
-    return sheet
-
+# --- PRUEBA TEMPORAL DE CONEXIÓN A GOOGLE SHEETS ---
+st.write("---")
 if st.button("Probar conexión Google Sheets"):
     try:
         sheet = conectar_google_sheet()
@@ -544,9 +554,3 @@ if st.button("Probar conexión Google Sheets"):
         st.write("Nombre de la hoja:", sheet.title)
     except Exception as e:
         st.error(f"Error de conexión: {e}")
-            
-            st.success("Determinación registrada correctamente.")
-            st.caption(f"Usuario: {registro['usuario']}")
-            st.caption(f"Fecha y hora: {registro['fecha_hora']}")
-            st.caption(f"Nivel de riesgo: {registro['nivel']}")
-            st.caption(f"Seguros activados: {registro['seguros_activados'] if registro['seguros_activados'] else 'Ninguno'}")
