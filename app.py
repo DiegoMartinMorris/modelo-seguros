@@ -525,6 +525,26 @@ if not bloqueo:
                     writer.writeheader()
                 writer.writerow(registro)
 
+import gspread
+from google.oauth2.service_account import Credentials
+
+def conectar_google_sheet():
+    scope = ["https://www.googleapis.com/auth/spreadsheets"]
+    creds = Credentials.from_service_account_info(
+        st.secrets["gcp_service_account"], scopes=scope
+    )
+    client = gspread.authorize(creds)
+    sheet = client.open("Registro Modelo Seguros").sheet1
+    return sheet
+
+if st.button("Probar conexión Google Sheets"):
+    try:
+        sheet = conectar_google_sheet()
+        st.success("Conexión exitosa con Google Sheets.")
+        st.write("Nombre de la hoja:", sheet.title)
+    except Exception as e:
+        st.error(f"Error de conexión: {e}")
+            
             st.success("Determinación registrada correctamente.")
             st.caption(f"Usuario: {registro['usuario']}")
             st.caption(f"Fecha y hora: {registro['fecha_hora']}")
