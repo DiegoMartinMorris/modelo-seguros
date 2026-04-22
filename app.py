@@ -127,6 +127,8 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
+usuario = st.text_input("Usuario que completa la determinación")
+
 opciones = ["No", "Sí"]
 r1 = st.radio("Pregunta 1: ¿Para realizar la actividad personal del proveedor ingresará a predios o instalaciones de SOFSA?", opciones, index=0)
 r2 = st.radio("""Pregunta 2: ¿La actividad consiste exclusivamente en tareas administrativas o profesionales de oficina, realizadas sin ingreso a áreas operativas ni intervención técnica?  
@@ -152,26 +154,34 @@ r8 = st.radio("""Pregunta 8: ¿La actividad incluye alguna de las siguientes tar
 • uso de maquinaria pesada  
 • uso de armas de fuego  
 • suministro de alimentos""", opciones, index=0)
-r9 = st.radio("""Pregunta 9: ¿La actividad implica la ejecución de una obra o el montaje/instalación de un sistema o equipo nuevo, cuyo valor total supere los USD 30.000?  
+r9 = st.radio("""Pregunta 9: ¿La actividad implica la ejecución de una obra o el montaje/instalación de un sistema o equipo nuevo?  
 Incluye:  
 • obras civiles  
 • refacciones estructurales  
 • instalación de equipos (montaje o desmontaje)  
 • montaje de sistema eléctrico o mecánico""", opciones, index=0)
 
+if r9 == "Sí":
+    r10 = st.radio("Pregunta 10: En caso de obra o montaje, ¿el valor total supera los USD 30.000?", ["Sí", "No"], index=0)
+else:
+    r10 = "No"
+
 # Conversión a booleanos
-p1, p2, p3, p4, p5, p6, p7, p8, p9 = [r == "Sí" for r in [r1, r2, r3, r4, r5, r6, r7, r8, r9]]
+p1, p2, p3, p4, p5, p6, p7, p8, p9, p10 = [r == "Sí" for r in [r1, r2, r3, r4, r5, r6, r7, r8, r9, r10]]
 
 # --- VALIDACIONES DE BLOQUEO ---
 bloqueo = False
+
 if not p1 and (p3 or p4 or p5 or p6 or p7 or p8 or p9):
-    st.error('Bloqueo detectado: La pregunta 1 debe responderse "Sí" para las tareas seleccionadas.')
+    st.error('Bloqueo detectado: no puede haber condiciones operativas seleccionadas si la respuesta a la Pregunta 1 es "No".')
     bloqueo = True
+
 if p2 and (p4 or p5 or p6 or p7 or p8 or p9):
-    st.error("Bloqueo detectado: Tareas seleccionadas incompatibles con actividad administrativa (Pregunta 2).")
+    st.error("Bloqueo detectado: la actividad no puede ser administrativa pura si al mismo tiempo incluye condiciones operativas.")
     bloqueo = True
+
 if p6 and (p2 or p4 or p5 or p7 or p8 or p9):
-    st.error('La pregunta 6 no puede ser "si" si respondio afirmativamente las preguntas 2,4,5,7,8,o 9')
+    st.error('Bloqueo detectado: la actividad no puede clasificarse como trabajo menor si fue marcada simultáneamente con otras condiciones de mayor riesgo.')
     bloqueo = True
 
 # --- PIE DE PÁGINA INTERFAZ ---
@@ -184,7 +194,10 @@ Si el servicio o contratación no se puede describir mediante el cuestionario, c
 # Lógica de Riesgo + trazabilidad
 if p9:
     nivel = "Alto"
-    fundamento = "Riesgo Alto por obra / instalación / montaje (P9 = Sí)"
+    if p10:
+        fundamento = "Riesgo Alto por obra / instalación / montaje mayor a USD 30.000 (P9 = Sí, P10 = Sí)"
+    else:
+        fundamento = "Riesgo Alto por obra / instalación / montaje menor o igual a USD 30.000 (P9 = Sí, P10 = No)"
 elif p8:
     nivel = "Alto"
     fundamento = "Riesgo Alto por tareas riesgosas (P8 = Sí)"
@@ -202,7 +215,25 @@ elif p1:
     fundamento = "Riesgo Bajo por presencia de personal sin condiciones de riesgo medio o alto (P1 = Sí)"
 else:
     nivel = "Nulo"
-    fundamento = "Riesgo Nulo por ausencia de personal y de condiciones operativas (P1 = No y P3 a P9 = No)"
+    fundamento = "Riesgo Nulo por ausencia de personal y de condiciones operativas (P1 = No y P3 a P10 = No)"
+
+# Seguros activados para trazabilidad
+seguros_activados = []
+
+if p1 and not bloqueo and nivel != "Nulo":
+    seguros_activados.append("Seguro de Personas (ART / VO / AP)")
+
+if (((p5 or p7 or p8) or (p9 and not p10)) and not (p9 and p10)) and not bloqueo and nivel != "Nulo":
+    seguros_activados.append("Responsabilidad Civil Comprensiva")
+
+if p9 and p10 and not bloqueo and nivel != "Nulo":
+    seguros_activados.append("Todo Riesgo Construcción y Montaje")
+
+if p4 and not bloqueo and nivel != "Nulo":
+    seguros_activados.append("Caución por Tenencia de Bienes")
+
+if p3 and not bloqueo and nivel != "Nulo":
+    seguros_activados.append("Responsabilidad Civil Automotor")
 
 if not bloqueo and nivel != "Nulo":
     st.write("---")
@@ -225,7 +256,8 @@ if not bloqueo and nivel != "Nulo":
             pdf_anexo.chapter_title("Seguro de Accidentes Personales")
             pdf_anexo.chapter_body(TEXTOS_LEGALES["AP"])
 
-        if (p5 or p7 or p8 or p9):
+        req_rc_separado = (((p5 or p7 or p8) or (p9 and not p10)) and not (p9 and p10))
+        if req_rc_separado:
             suma_rc = "USD 100.000" if nivel == "Alto" else "USD 50.000"
             pdf_anexo.chapter_title("Responsabilidad Civil Comprensiva")
             pdf_anexo.chapter_body(TEXTOS_LEGALES["RC"] + f"\n\nSUMA ASEGURADA MINIMA REQUERIDA: {suma_rc}")
@@ -234,7 +266,7 @@ if not bloqueo and nivel != "Nulo":
             pdf_anexo.chapter_title("Caución por Tenencia de Bienes")
             pdf_anexo.chapter_body(TEXTOS_LEGALES["CAUCION"])
 
-        if p9:
+        if p9 and p10:
             pdf_anexo.chapter_title("Todo Riesgo Construcción y Montaje")
             pdf_anexo.chapter_body(TEXTOS_LEGALES["TRCYM"])
 
@@ -251,31 +283,38 @@ if not bloqueo and nivel != "Nulo":
             file_name=f"Anexo_Seguros_{nivel}.pdf",
             mime="application/pdf"
         )
+
     # --- BOTÓN 2: CHECKLIST DE CONTROL ---
     with col_btn2:
-        req_rc_separado = (p5 or p7 or p8 or p9) and not p9
-       
+        req_trcym = p9 and p10
+        req_rc_separado = (((p5 or p7 or p8) or (p9 and not p10)) and not req_trcym)
+
         seguros_checklist = []
-        if p1: seguros_checklist.append("Seguro de Personas (ART / VO / AP)")
-        if req_rc_separado: seguros_checklist.append("Responsabilidad Civil Comprensiva")
-        if p9: seguros_checklist.append("Todo Riesgo Construcción y Montaje")
-        if p4: seguros_checklist.append("Caución por Tenencia de Bienes")
-        if p3: seguros_checklist.append("Responsabilidad Civil Automotor")
+        if p1:
+            seguros_checklist.append("Seguro de Personas (ART / VO / AP)")
+        if req_rc_separado:
+            seguros_checklist.append("Responsabilidad Civil Comprensiva")
+        if req_trcym:
+            seguros_checklist.append("Todo Riesgo Construcción y Montaje")
+        if p4:
+            seguros_checklist.append("Caución por Tenencia de Bienes")
+        if p3:
+            seguros_checklist.append("Responsabilidad Civil Automotor")
 
         chk = PDF()
         chk.add_page()
         chk.chapter_title("CHECKLIST DE CONTROL DE PÓLIZAS", 14)
         chk.chapter_body("Seguros requeridos según Anexo generado por el Modelo de Determinación de Seguros a Proveedores", 11, 'B')
-       
+
         chk.ln(4)
         chk.chapter_body("Resultado del modelo", 10, 'B')
         chk.chapter_body(f"Nivel de riesgo determinado: {nivel}")
         chk.chapter_body(f"Seguros requeridos: {', '.join(seguros_checklist)}")
-       
+
         chk.ln(4)
         chk.chapter_body("Regla operativa", 10, 'B')
         chk.chapter_body("Ante duda razonable sobre la aplicabilidad del seguro, SOFSA determinará su exigencia en función del riesgo identificado.")
-       
+
         chk.ln(4)
         chk.chapter_body("Control documental general (aplica a todos los seguros)", 10, 'B')
         chk.chapter_body("""
@@ -290,12 +329,10 @@ if not bloqueo and nivel != "Nulo":
             chk.ln(4)
             chk.chapter_body("1. Seguro de Personas", 10, 'B')
             chk.chapter_body("""
-           
             ART:  
             [] Nómina de personal afectado  
             [] Cláusula de no repetición""")
             chk.chapter_body("""
-           
             Seguro Colectivo de Vida Obligatorio:  
             [] Nómina de personal afectado""")
             chk.chapter_body("""
@@ -326,7 +363,7 @@ if not bloqueo and nivel != "Nulo":
             [] Suministro de alimentos
             """)
 
-        if p9:
+        if req_trcym:
             chk.ln(4)
             chk.chapter_body("3. Todo Riesgo Construcción y Montaje", 10, 'B')
             chk.chapter_body("""
@@ -340,7 +377,7 @@ if not bloqueo and nivel != "Nulo":
             """)
             chk.chapter_body("""Cobertura de Responsabilidad Civil dentro de Todo Riesgo Construcción""", 10, 'B')
             chk.chapter_body("""
-            [] Responsabilidad Civil incluida dentro de la póliza TRCyM  
+            [] Responsabilidad Civil expresamente incluida dentro de la póliza TRCyM  
             [] Suma asegurada de RC acorde al nivel de riesgo  
             [] Incluye adicionales según actividad (si corresponden)
             """)
@@ -380,3 +417,46 @@ if not bloqueo:
         st.success("**NIVEL DE RIESGO: Nulo. No hay requerimiento de Seguros**")
 
     st.caption(f"**Trazabilidad:** {fundamento}")
+
+    if seguros_activados:
+        st.caption(f"**Seguros activados:** {', '.join(seguros_activados)}")
+
+# --- REGISTRO DE DETERMINACIÓN ---
+if not bloqueo:
+    st.write("---")
+    if st.button("Registrar determinación"):
+        registro = {
+            "fecha_hora": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "usuario": usuario.strip() if usuario else "",
+            "P1": r1,
+            "P2": r2,
+            "P3": r3,
+            "P4": r4,
+            "P5": r5,
+            "P6": r6,
+            "P7": r7,
+            "P8": r8,
+            "P9": r9,
+            "P10": r10,
+            "bloqueo": "Sí" if bloqueo else "No",
+            "nivel": nivel,
+            "fundamento": fundamento,
+            "seguros_activados": ", ".join(seguros_activados),
+            "anexo": "Sí" if (not bloqueo and nivel != "Nulo") else "No",
+            "checklist": "Sí" if (not bloqueo and nivel != "Nulo") else "No"
+        }
+
+        archivo_log = "registro_determinaciones.csv"
+        existe = os.path.exists(archivo_log)
+
+        with open(archivo_log, mode="a", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=registro.keys())
+            if not existe:
+                writer.writeheader()
+            writer.writerow(registro)
+
+        st.success("Determinación registrada correctamente.")
+        st.caption(f"Usuario: {registro['usuario'] if registro['usuario'] else 'No informado'}")
+        st.caption(f"Fecha y hora: {registro['fecha_hora']}")
+        st.caption(f"Nivel de riesgo: {registro['nivel']}")
+        st.caption(f"Seguros activados: {registro['seguros_activados'] if registro['seguros_activados'] else 'Ninguno'}")
