@@ -3,6 +3,7 @@ from fpdf import FPDF
 import datetime
 import os
 import csv
+from zoneinfo import ZoneInfo
 
 # --- CONFIGURACIÓN DE PÁGINA ---
 st.set_page_config(page_title="Determinador de Seguros", layout="centered")
@@ -127,42 +128,104 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
-usuario = st.text_input("Usuario que completa la determinación")
+usuario = st.text_input(
+    "Usuario que completa el cuestionario",
+    placeholder="Ingrese nombre y apellido"
+)
 
 opciones = ["No", "Sí"]
-r1 = st.radio("Pregunta 1: ¿Para realizar la actividad personal del proveedor ingresará a predios o instalaciones de SOFSA?", opciones, index=0)
-r2 = st.radio("""Pregunta 2: ¿La actividad consiste exclusivamente en tareas administrativas o profesionales de oficina, realizadas sin ingreso a áreas operativas ni intervención técnica?  
-Ejemplos: consultoría, auditoría, capacitaciones teóricas, asesoramiento profesional""", opciones, index=0)
-r3 = st.radio("Pregunta 3: ¿La actividad requiere el ingreso de vehículos del proveedor a predios o instalaciones de SOFSA?", opciones, index=0)
-r4 = st.radio("Pregunta 4: ¿El proveedor tendrá bajo su guarda, custodia o control bienes de SOFSA, cuyo valor individual o total supere los USD 5.000?", opciones, index=0)
-r5 = st.radio("Pregunta 5: ¿El trabajo se realizará en andenes, vías, talleres ferroviarios o sectores con circulación de trenes?", opciones, index=0)
-r6 = st.radio("""Pregunta 6: ¿La actividad corresponde a un trabajo menor de mantenimiento simple en SOFSA? Para ser considerado trabajo menor, debe cumplir todas estas condiciones:  
+
+st.markdown("**Pregunta 1**")
+r1 = st.radio(
+    "¿Para realizar la actividad personal del proveedor ingresará a predios o instalaciones de SOFSA?",
+    opciones,
+    index=0
+)
+
+st.markdown("**Pregunta 2**")
+r2 = st.radio(
+    """¿La actividad consiste exclusivamente en tareas administrativas o profesionales de oficina, realizadas sin ingreso a áreas operativas ni intervención técnica?  
+Ejemplos: consultoría, auditoría, capacitaciones teóricas, asesoramiento profesional""",
+    opciones,
+    index=0
+)
+
+st.markdown("**Pregunta 3**")
+r3 = st.radio(
+    "¿La actividad requiere el ingreso de vehículos del proveedor a predios o instalaciones de SOFSA?",
+    opciones,
+    index=0
+)
+
+st.markdown("**Pregunta 4**")
+r4 = st.radio(
+    "¿El proveedor tendrá bajo su guarda, custodia o control bienes de SOFSA, cuyo valor individual o total supere los USD 5.000?",
+    opciones,
+    index=0
+)
+
+st.markdown("**Pregunta 5**")
+r5 = st.radio(
+    "¿El trabajo se realizará en andenes, vías, talleres ferroviarios o sectores con circulación de trenes?",
+    opciones,
+    index=0
+)
+
+st.markdown("**Pregunta 6**")
+r6 = st.radio(
+    """¿La actividad corresponde a un trabajo menor de mantenimiento simple en SOFSA? Para ser considerado trabajo menor, debe cumplir todas estas condiciones:  
 • duración corta (menor a 1 mes de trabajo)  
 • uso herramientas manuales simples  
 • sin trabajo en altura, ni andamios  
 • sin maquinaria pesada o equipos  
 • sin intervención en infraestructura  
 • sin afectar circulación ferroviaria o de pasajeros  
-Ejemplos: (pintura interior de oficina, reparación menor de mobiliario, cerrajería, etc)""", opciones, index=0)
-r7 = st.radio("""Pregunta 7: ¿La actividad requiere uso de equipos, maquinaria o de herramientas complejas en la empresa?  
-Ejemplos: herramientas de corte y/o de calor y/o a explosión, equipos técnicos, maquinarias pesada""", opciones, index=0)
-r8 = st.radio("""Pregunta 8: ¿La actividad incluye alguna de las siguientes tareas?  
+Ejemplos: (pintura interior de oficina, reparación menor de mobiliario, cerrajería, etc)""",
+    opciones,
+    index=0
+)
+
+st.markdown("**Pregunta 7**")
+r7 = st.radio(
+    """¿La actividad requiere uso de equipos, maquinaria o de herramientas complejas en la empresa?  
+Ejemplos: herramientas de corte y/o de calor y/o a explosión, equipos técnicos, maquinarias pesada""",
+    opciones,
+    index=0
+)
+
+st.markdown("**Pregunta 8**")
+r8 = st.radio(
+    """¿La actividad incluye alguna de las siguientes tareas?  
 • trabajos en altura  
 • soldadura u oxicorte  
 • izaje de cargas  
 • intervención eléctrica  
 • uso de maquinaria pesada  
 • uso de armas de fuego  
-• suministro de alimentos""", opciones, index=0)
-r9 = st.radio("""Pregunta 9: ¿La actividad implica la ejecución de una obra o el montaje/instalación de un sistema o equipo nuevo?  
+• suministro de alimentos""",
+    opciones,
+    index=0
+)
+
+st.markdown("**Pregunta 9**")
+r9 = st.radio(
+    """¿La actividad implica la ejecución de una obra o el montaje/instalación de un sistema o equipo nuevo?  
 Incluye:  
 • obras civiles  
 • refacciones estructurales  
 • instalación de equipos (montaje o desmontaje)  
-• montaje de sistema eléctrico o mecánico""", opciones, index=0)
+• montaje de sistema eléctrico o mecánico""",
+    opciones,
+    index=0
+)
 
 if r9 == "Sí":
-    r10 = st.radio("Pregunta 10: En caso de obra o montaje, ¿el valor total supera los USD 30.000?", ["Sí", "No"], index=0)
+    st.markdown("**Pregunta 10**")
+    r10 = st.radio(
+        "En caso de obra o montaje, ¿el valor total supera los USD 30.000?",
+        ["Sí", "No"],
+        index=0
+    )
 else:
     r10 = "No"
 
@@ -425,38 +488,43 @@ if not bloqueo:
 if not bloqueo:
     st.write("---")
     if st.button("Registrar determinación"):
-        registro = {
-            "fecha_hora": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "usuario": usuario.strip() if usuario else "",
-            "P1": r1,
-            "P2": r2,
-            "P3": r3,
-            "P4": r4,
-            "P5": r5,
-            "P6": r6,
-            "P7": r7,
-            "P8": r8,
-            "P9": r9,
-            "P10": r10,
-            "bloqueo": "Sí" if bloqueo else "No",
-            "nivel": nivel,
-            "fundamento": fundamento,
-            "seguros_activados": ", ".join(seguros_activados),
-            "anexo": "Sí" if (not bloqueo and nivel != "Nulo") else "No",
-            "checklist": "Sí" if (not bloqueo and nivel != "Nulo") else "No"
-        }
+        usuario_limpio = usuario.strip() if usuario else ""
 
-        archivo_log = "registro_determinaciones.csv"
-        existe = os.path.exists(archivo_log)
+        if not usuario_limpio or len(usuario_limpio.split()) < 2:
+            st.error("Debe completar nombre y apellido antes de registrar la determinación.")
+        else:
+            registro = {
+                "fecha_hora": datetime.datetime.now(ZoneInfo("America/Argentina/Buenos_Aires")).strftime("%Y-%m-%d %H:%M:%S"),
+                "usuario": usuario_limpio,
+                "P1": r1,
+                "P2": r2,
+                "P3": r3,
+                "P4": r4,
+                "P5": r5,
+                "P6": r6,
+                "P7": r7,
+                "P8": r8,
+                "P9": r9,
+                "P10": r10,
+                "bloqueo": "Sí" if bloqueo else "No",
+                "nivel": nivel,
+                "fundamento": fundamento,
+                "seguros_activados": ", ".join(seguros_activados),
+                "anexo": "Sí" if (not bloqueo and nivel != "Nulo") else "No",
+                "checklist": "Sí" if (not bloqueo and nivel != "Nulo") else "No"
+            }
 
-        with open(archivo_log, mode="a", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(f, fieldnames=registro.keys())
-            if not existe:
-                writer.writeheader()
-            writer.writerow(registro)
+            archivo_log = "registro_determinaciones.csv"
+            existe = os.path.exists(archivo_log)
 
-        st.success("Determinación registrada correctamente.")
-        st.caption(f"Usuario: {registro['usuario'] if registro['usuario'] else 'No informado'}")
-        st.caption(f"Fecha y hora: {registro['fecha_hora']}")
-        st.caption(f"Nivel de riesgo: {registro['nivel']}")
-        st.caption(f"Seguros activados: {registro['seguros_activados'] if registro['seguros_activados'] else 'Ninguno'}")
+            with open(archivo_log, mode="a", newline="", encoding="utf-8") as f:
+                writer = csv.DictWriter(f, fieldnames=registro.keys())
+                if not existe:
+                    writer.writeheader()
+                writer.writerow(registro)
+
+            st.success("Determinación registrada correctamente.")
+            st.caption(f"Usuario: {registro['usuario']}")
+            st.caption(f"Fecha y hora: {registro['fecha_hora']}")
+            st.caption(f"Nivel de riesgo: {registro['nivel']}")
+            st.caption(f"Seguros activados: {registro['seguros_activados'] if registro['seguros_activados'] else 'Ninguno'}")
