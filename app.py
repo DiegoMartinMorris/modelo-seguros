@@ -26,7 +26,6 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- CLASE PDF ---
 class PDF(FPDF):
     def __init__(self):
         super().__init__(orientation='P', unit='mm', format='A4')
@@ -39,15 +38,26 @@ class PDF(FPDF):
                 self.image("header_trenes.png", 10, 8, 190)
             except:
                 pass
-        
         self.ln(25)
 
     def footer(self):
         if os.path.exists("footer_trenes.png"):
             try:
                 self.image("footer_trenes.png", 10, 270, 190)
-	    except:
-		pass
+            except:
+                pass
+
+    def chapter_title(self, title, size=12):
+        self.set_font('Helvetica', 'B', size)
+        txt_safe = title.upper().encode('latin-1', 'replace').decode('latin-1')
+        self.multi_cell(0, 10, txt=txt_safe)
+        self.ln(2)
+
+    def chapter_body(self, body, size=10, style=''):
+        self.set_font('Helvetica', style, size)
+        txt_safe = str(body).encode('latin-1', 'replace').decode('latin-1')
+        self.multi_cell(0, 6, txt=txt_safe, align='J')
+        self.ln(2)
 
 
 
