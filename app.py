@@ -30,34 +30,26 @@ st.markdown("""
 class PDF(FPDF):
     def __init__(self):
         super().__init__(orientation='P', unit='mm', format='A4')
-        self.set_margins(15, 15, 15)
-        self.set_auto_page_break(auto=True, margin=15)
+        self.set_margins(15, 35, 15)
+        self.set_auto_page_break(auto=True, margin=30)
 
     def header(self):
-        if os.path.exists("logotrenes.png"):
+        if os.path.exists("header_trenes.png"):
             try:
-                self.image("logotrenes.png", 10, 8, 33)
+                self.image("header_trenes.png", 10, 8, 190)
             except:
                 pass
-        self.set_font('Helvetica', 'B', 15)
-        self.ln(10)
+        
+        self.ln(25)
 
     def footer(self):
-        self.set_y(-15)
-        self.set_font('Helvetica', 'I', 8)
-        self.cell(0, 10, f'Página {self.page_no()}', 0, 0, 'C')
+        if os.path.exists("footer_trenes.png"):
+            try:
+                self.image("footer_trenes.png", 10, 270, 190)
+	    except:
+		pass
 
-    def chapter_title(self, title, size=12):
-        self.set_font('Helvetica', 'B', size)
-        txt_safe = title.upper().encode('latin-1', 'replace').decode('latin-1')
-        self.multi_cell(0, 10, txt=txt_safe)
-        self.ln(2)
 
-    def chapter_body(self, body, size=10, style=''):
-        self.set_font('Helvetica', style, size)
-        txt_safe = str(body).encode('latin-1', 'replace').decode('latin-1')
-        self.multi_cell(0, 6, txt=txt_safe, align='J')
-        self.ln(2)
 
 # --- TEXTOS LEGALES INTEGRALES ---
 TEXTOS_LEGALES = {
