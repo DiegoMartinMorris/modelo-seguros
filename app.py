@@ -533,7 +533,7 @@ if bloqueo:
                 "",                        # Fundamento
                 "",                        # Seguros_Activados
                 "No",                      # Anexo
-                "No"                       # Checklist
+                "No",                       # Checklist
                 tipo_registro              # Tipo_Registro
             ]
 
