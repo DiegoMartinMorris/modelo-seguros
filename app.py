@@ -578,12 +578,4 @@ else:
             except Exception as e:
                 st.error(f"Error al registrar en Google Sheets: {e}")
 
-# --- PRUEBA TEMPORAL DE CONEXIÓN A GOOGLE SHEETS ---
-st.write("---")
-if st.button("Probar conexión Google Sheets"):
-    try:
-        sheet = conectar_google_sheet()
-        st.success("Conexión exitosa con Google Sheets.")
-        st.write("Nombre de la hoja:", sheet.title)
-    except Exception as e:
-        st.error(f"Error de conexión: {e}")
+
