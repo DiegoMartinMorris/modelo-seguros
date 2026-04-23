@@ -547,7 +547,7 @@ if bloqueo:
                 st.error(f"Error al registrar en Google Sheets: {e}")
 
 else:
-    if st.button("Registrar determinación"):
+    if st.button("Registrar cuestionario"):
         usuario_limpio = usuario.strip() if usuario else ""
 
         if not usuario_limpio or len(usuario_limpio.split()) < 2:
