@@ -522,6 +522,7 @@ if bloqueo:
         if not usuario_limpio or len(usuario_limpio.split()) < 2:
             st.error("Debe completar nombre y apellido antes de registrar el intento.")
         else:
+            tipo_registro = "BLOQUEADO"
             fila = [
                 fecha_hora_actual,         # FechaHora
                 usuario_limpio,            # Usuario
@@ -533,6 +534,7 @@ if bloqueo:
                 "",                        # Seguros_Activados
                 "No",                      # Anexo
                 "No"                       # Checklist
+                tipo_registro              # Tipo_Registro
             ]
 
             try:
@@ -551,6 +553,7 @@ else:
         if not usuario_limpio or len(usuario_limpio.split()) < 2:
             st.error("Debe completar nombre y apellido antes de registrar la determinación.")
         else:
+            tipo_registro = "OK"
             fila = [
                 fecha_hora_actual,                 # FechaHora
                 usuario_limpio,                    # Usuario
@@ -562,6 +565,7 @@ else:
                 ", ".join(seguros_activados),      # Seguros_Activados
                 "Sí" if nivel != "Nulo" else "No", # Anexo
                 "Sí" if nivel != "Nulo" else "No"  # Checklist
+                tipo_registro                      # Tipo_Registro
             ]
 
             try:
