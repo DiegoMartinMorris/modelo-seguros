@@ -2,13 +2,19 @@ import streamlit as st
 from fpdf import FPDF
 import datetime
 import os
-import csv
 from zoneinfo import ZoneInfo
 import gspread
 from google.oauth2.service_account import Credentials
 
 # --- CONFIGURACIÓN DE PÁGINA ---
 st.set_page_config(page_title="Determinador de Seguros", layout="centered")
+
+# --- SESSION STATE ---
+if "registrado" not in st.session_state:
+    st.session_state.registrado = False
+
+if "firma_registrada" not in st.session_state:
+    st.session_state.firma_registrada = None
 
 # --- ESTILOS CSS ---
 st.markdown("""
@@ -20,7 +26,7 @@ st.markdown("""
         border-radius: 0.5rem;
         color: white;
         text-align: center;
-        margin-bottom: 2rem;
+        margin-bottom: 1rem;
     }
     .main-header h1 { color: white !important; margin-bottom: 0.5rem; }
     div.stDownloadButton:nth-of-type(1) button { background-color: #002366 !important; color: white !important; }
@@ -150,10 +156,18 @@ st.markdown("""
     </div>
     """, unsafe_allow_html=True)
 
+st.caption("Tiempo estimado: 1–2 minutos")
+
 usuario = st.text_input(
     "Usuario que completa el cuestionario",
     placeholder="Ingrese nombre y apellido"
 )
+
+solped = st.text_input(
+    "Solicitud de Pedido (SOLPED)",
+    placeholder="Ingrese la referencia de la contratación"
+)
+st.caption("Ingrese el número de SOLPED asociado a la contratación.")
 
 opciones = ["No", "Sí"]
 
@@ -185,6 +199,7 @@ r4 = st.radio(
     opciones,
     index=0
 )
+st.caption("Considerar valor de los bienes al tipo de cambio BNA billete vendedor a la fecha del registro del cuestionario.")
 
 st.markdown("**Pregunta 5**")
 r5 = st.radio(
@@ -206,6 +221,7 @@ Ejemplos: (pintura interior de oficina, reparación menor de mobiliario, cerraje
     opciones,
     index=0
 )
+st.caption("Ante duda, responder NO.")
 
 st.markdown("**Pregunta 7**")
 r7 = st.radio(
@@ -245,14 +261,25 @@ if r9 == "Sí":
     st.markdown("**Pregunta 10**")
     r10 = st.radio(
         "En caso de obra o montaje, ¿el valor total supera los USD 30.000?",
-        ["Sí", "No"],
+        ["No", "Sí"],
         index=0
     )
+    st.caption("Considerar monto estimativo al tipo de cambio BNA billete vendedor a la fecha del registro del cuestionario.")
 else:
     r10 = "No"
 
 # Conversión a booleanos
 p1, p2, p3, p4, p5, p6, p7, p8, p9, p10 = [r == "Sí" for r in [r1, r2, r3, r4, r5, r6, r7, r8, r9, r10]]
+
+# Firma actual del formulario para invalidar registro si cambia algo
+firma_actual = (
+    usuario.strip(),
+    solped.strip(),
+    r1, r2, r3, r4, r5, r6, r7, r8, r9, r10
+)
+
+if st.session_state.firma_registrada is not None and st.session_state.firma_registrada != firma_actual:
+    st.session_state.registrado = False
 
 # --- VALIDACIONES DE BLOQUEO ---
 bloqueo = False
@@ -324,175 +351,7 @@ if p4 and not bloqueo and nivel != "Nulo":
 if p3 and not bloqueo and nivel != "Nulo":
     seguros_activados.append("Responsabilidad Civil Automotor")
 
-if not bloqueo and nivel != "Nulo":
-    st.write("---")
-    col_btn1, col_btn2 = st.columns(2)
-
-    with col_btn1:
-        pdf_anexo = PDF()
-        pdf_anexo.add_page()
-        pdf_anexo.chapter_title("ANEXO DE SEGUROS")
-        pdf_anexo.chapter_body(TEXTOS_LEGALES["GENERAL_ENCABEZADO"])
-
-        if p1:
-            pdf_anexo.chapter_title("Seguro de Riesgos del Trabajo (ART)")
-            pdf_anexo.chapter_body(TEXTOS_LEGALES["ART"])
-
-            pdf_anexo.chapter_title("Seguro Colectivo de Vida Obligatorio")
-            pdf_anexo.chapter_body(TEXTOS_LEGALES["VO"])
-
-            pdf_anexo.chapter_title("Seguro de Accidentes Personales")
-            pdf_anexo.chapter_body(TEXTOS_LEGALES["AP"])
-
-        req_rc_separado = (((p5 or p7 or p8) or (p9 and not p10)) and not (p9 and p10))
-        if req_rc_separado:
-            suma_rc = "USD 100.000" if nivel == "Alto" else "USD 50.000"
-            pdf_anexo.chapter_title("Responsabilidad Civil Comprensiva")
-            pdf_anexo.chapter_body(TEXTOS_LEGALES["RC"] + f"\n\nSUMA ASEGURADA MINIMA REQUERIDA: {suma_rc}")
-
-        if p4:
-            pdf_anexo.chapter_title("Caución por Tenencia de Bienes")
-            pdf_anexo.chapter_body(TEXTOS_LEGALES["CAUCION"])
-
-        if p9 and p10:
-            pdf_anexo.chapter_title("Todo Riesgo Construcción y Montaje")
-            pdf_anexo.chapter_body(TEXTOS_LEGALES["TRCYM"])
-
-        if p3:
-            pdf_anexo.chapter_title("Responsabilidad Civil Automotor")
-            pdf_anexo.chapter_body(TEXTOS_LEGALES["AUTO"])
-
-        pdf_anexo.add_page()
-        pdf_anexo.chapter_body(TEXTOS_LEGALES["REQUISITOS_FINALES"])
-
-        st.download_button(
-            label="Generar Anexo de Seguros",
-            data=bytes(pdf_anexo.output()),
-            file_name=f"Anexo_Seguros_{nivel}.pdf",
-            mime="application/pdf"
-        )
-
-    with col_btn2:
-        req_trcym = p9 and p10
-        req_rc_separado = (((p5 or p7 or p8) or (p9 and not p10)) and not req_trcym)
-
-        seguros_checklist = []
-        if p1:
-            seguros_checklist.append("Seguro de Personas (ART / VO / AP)")
-        if req_rc_separado:
-            seguros_checklist.append("Responsabilidad Civil Comprensiva")
-        if req_trcym:
-            seguros_checklist.append("Todo Riesgo Construcción y Montaje")
-        if p4:
-            seguros_checklist.append("Caución por Tenencia de Bienes")
-        if p3:
-            seguros_checklist.append("Responsabilidad Civil Automotor")
-
-        chk = PDF()
-        chk.add_page()
-        chk.chapter_title("CHECKLIST DE CONTROL DE PÓLIZAS", 14)
-        chk.chapter_body("Seguros requeridos según Anexo generado por el Modelo de Determinación de Seguros a Proveedores", 11, 'B')
-
-        chk.ln(4)
-        chk.chapter_body("Resultado del modelo", 10, 'B')
-        chk.chapter_body(f"Nivel de riesgo determinado: {nivel}")
-        chk.chapter_body(f"Seguros requeridos: {', '.join(seguros_checklist)}")
-
-        chk.ln(4)
-        chk.chapter_body("Regla operativa", 10, 'B')
-        chk.chapter_body("Ante duda razonable sobre la aplicabilidad del seguro, SOFSA determinará su exigencia en función del riesgo identificado.")
-
-        chk.ln(4)
-        chk.chapter_body("Control documental general (aplica a todos los seguros)", 10, 'B')
-        chk.chapter_body("""
-        [] Aseguradora habilitada SSN  
-        [] Calificación de la aseguradora  
-        [] Vigencia durante toda la actividad  
-        [] Actividad asegurada compatible  
-        [] Certificado de cobertura vigente  
-        [] Libre deuda (si aplica)""")
-
-        if p1:
-            chk.ln(4)
-            chk.chapter_body("1. Seguro de Personas", 10, 'B')
-            chk.chapter_body("""
-            ART:  
-            [] Nómina de personal afectado  
-            [] Cláusula de no repetición""")
-            chk.chapter_body("""
-            Seguro Colectivo de Vida Obligatorio:  
-            [] Nómina de personal afectado""")
-            chk.chapter_body("""
-            Seguro de Accidentes Personales:
-            [] Suma asegurada correcta  
-            [] Nómina de personal afectado  
-            [] Cláusula de no repetición  
-            [] Cláusula SOFSA beneficiaria en primer término  
-            [] Cláusula de notificación previa""")
-
-        if req_rc_separado:
-            chk.ln(4)
-            chk.chapter_body("2. Responsabilidad Civil Comprensiva", 10, 'B')
-            chk.chapter_body("""
-            [] Suma asegurada correcta  
-            [] Cláusula de no repetición  
-            [] Asegurados adicionales  
-            [] Cláusula RC cruzada  
-            [] Cláusula de notificación previa""")
-            chk.chapter_body("""
-            Adicionales según actividad:  
-            [] Trabajos en altura  
-            [] Soldadura / oxicorte  
-            [] Izaje de carga  
-            [] Intervención eléctrica  
-            [] Maquinaria pesada  
-            [] Uso de armas  
-            [] Suministro de alimentos
-            """)
-
-        if req_trcym:
-            chk.ln(4)
-            chk.chapter_body("3. Todo Riesgo Construcción y Montaje", 10, 'B')
-            chk.chapter_body("""
-            [] Suma asegurada correcta  
-            [] Vigencia total de obra  
-            [] Incluye daños materiales  
-            [] Cláusula de no repetición  
-            [] Asegurados adicionales  
-            [] Cláusula RC cruzada  
-            [] Cláusula de notificación previa
-            """)
-            chk.chapter_body("""Cobertura de Responsabilidad Civil dentro de Todo Riesgo Construcción""", 10, 'B')
-            chk.chapter_body("""
-            [] Responsabilidad Civil expresamente incluida dentro de la póliza TRCyM  
-            [] Suma asegurada de RC acorde al nivel de riesgo  
-            [] Incluye adicionales según actividad (si corresponden)
-            """)
-
-        if p4:
-            chk.ln(4)
-            chk.chapter_body("4. Caución por Tenencia de Bienes", 10, 'B')
-            chk.chapter_body("""
-            [] Monto acorde al valor indicado en el pliego  
-            [] Vigencia total del contrato""")
-
-        if p3:
-            chk.ln(4)
-            chk.chapter_body("5. Responsabilidad Civil Automotor", 10, 'B')
-            chk.chapter_body("""
-            [] Vehículos declarados  
-            [] Cláusula de notificación previa  
-            [] Cláusula de no repetición
-            """)
-
-        st.download_button(
-            label="Generar Checklist de control",
-            data=bytes(chk.output()),
-            file_name=f"Checklist_Control_{nivel}.pdf",
-            mime="application/pdf"
-        )
-
-# Carteles de Nivel de Riesgo + trazabilidad
+# Resultado del modelo
 if not bloqueo:
     if nivel == "Alto":
         st.error(f"**NIVEL DE RIESGO: {nivel}**")
@@ -511,6 +370,13 @@ if not bloqueo:
 # --- REGISTRO EN GOOGLE SHEETS ---
 st.write("---")
 
+st.warning("""
+La información ingresada reviste carácter de declaración jurada.
+El usuario es responsable por la veracidad de los datos consignados, los cuales constituyen la base para la determinación de seguros.
+""")
+
+st.info("Verificar respuestas antes de registrar.")
+
 fecha_hora_actual = datetime.datetime.now(
     ZoneInfo("America/Argentina/Buenos_Aires")
 ).strftime("%Y-%m-%d %H:%M:%S")
@@ -518,29 +384,36 @@ fecha_hora_actual = datetime.datetime.now(
 if bloqueo:
     if st.button("Registrar intento bloqueado"):
         usuario_limpio = usuario.strip() if usuario else ""
+        solped_limpio = solped.strip() if solped else ""
 
         if not usuario_limpio or len(usuario_limpio.split()) < 2:
             st.error("Debe completar nombre y apellido antes de registrar el intento.")
+        elif not solped_limpio:
+            st.error("Debe completar la Solicitud de Pedido (SOLPED) antes de registrar el intento.")
         else:
             tipo_registro = "BLOQUEADO"
             fila = [
-                fecha_hora_actual,         # FechaHora
-                usuario_limpio,            # Usuario
+                fecha_hora_actual,          # FechaHora
+                usuario_limpio,             # Usuario
+                solped_limpio,              # SOLPED
                 r1, r2, r3, r4, r5, r6, r7, r8, r9, r10,   # P1 a P10
-                "Sí",                      # Bloqueo
-                motivo_bloqueo,            # Motivo_Bloqueo
-                "",                        # Nivel_Riesgo
-                "",                        # Fundamento
-                "",                        # Seguros_Activados
-                "No",                      # Anexo
+                "Sí",                       # Bloqueo
+                motivo_bloqueo,             # Motivo_Bloqueo
+                "",                         # Nivel_Riesgo
+                "",                         # Fundamento
+                "",                         # Seguros_Activados
+                "No",                       # Anexo
                 "No",                       # Checklist
-                tipo_registro              # Tipo_Registro
+                tipo_registro               # Tipo_Registro
             ]
 
             try:
                 guardar_registro_google_sheet(fila)
-                st.success("Intento bloqueado registrado correctamente.")
+                st.session_state.registrado = True
+                st.session_state.firma_registrada = firma_actual
+                st.success("Resultado registrado correctamente.")
                 st.caption(f"Usuario: {usuario_limpio}")
+                st.caption(f"SOLPED: {solped_limpio}")
                 st.caption(f"Fecha y hora: {fecha_hora_actual}")
                 st.caption(f"Motivo de bloqueo: {motivo_bloqueo}")
             except Exception as e:
@@ -549,33 +422,211 @@ if bloqueo:
 else:
     if st.button("Registrar cuestionario"):
         usuario_limpio = usuario.strip() if usuario else ""
+        solped_limpio = solped.strip() if solped else ""
 
         if not usuario_limpio or len(usuario_limpio.split()) < 2:
-            st.error("Debe completar nombre y apellido antes de registrar la determinación.")
+            st.error("Debe completar nombre y apellido antes de registrar el cuestionario.")
+        elif not solped_limpio:
+            st.error("Debe completar la Solicitud de Pedido (SOLPED) antes de registrar el cuestionario.")
         else:
             tipo_registro = "OK"
             fila = [
-                fecha_hora_actual,                 # FechaHora
-                usuario_limpio,                    # Usuario
+                fecha_hora_actual,                  # FechaHora
+                usuario_limpio,                     # Usuario
+                solped_limpio,                      # SOLPED
                 r1, r2, r3, r4, r5, r6, r7, r8, r9, r10,   # P1 a P10
-                "No",                              # Bloqueo
-                "",                                # Motivo_Bloqueo
-                nivel,                             # Nivel_Riesgo
-                fundamento,                        # Fundamento
-                ", ".join(seguros_activados),      # Seguros_Activados
-                "Sí" if nivel != "Nulo" else "No", # Anexo
-                "Sí" if nivel != "Nulo" else "No", # Checklist
-                tipo_registro                      # Tipo_Registro
+                "No",                               # Bloqueo
+                "",                                 # Motivo_Bloqueo
+                nivel,                              # Nivel_Riesgo
+                fundamento,                         # Fundamento
+                ", ".join(seguros_activados),       # Seguros_Activados
+                "Sí" if nivel != "Nulo" else "No",  # Anexo
+                "Sí" if nivel != "Nulo" else "No",  # Checklist
+                tipo_registro                       # Tipo_Registro
             ]
 
             try:
                 guardar_registro_google_sheet(fila)
-                st.success("Determinación registrada correctamente.")
+                st.session_state.registrado = True
+                st.session_state.firma_registrada = firma_actual
+                st.success("Resultado registrado correctamente.")
                 st.caption(f"Usuario: {usuario_limpio}")
+                st.caption(f"SOLPED: {solped_limpio}")
                 st.caption(f"Fecha y hora: {fecha_hora_actual}")
                 st.caption(f"Nivel de riesgo: {nivel}")
                 st.caption(f"Seguros activados: {', '.join(seguros_activados) if seguros_activados else 'Ninguno'}")
             except Exception as e:
                 st.error(f"Error al registrar en Google Sheets: {e}")
 
+# --- GENERACIÓN DE ANEXO Y CHECKLIST SOLO SI YA SE REGISTRÓ ---
+if not bloqueo and nivel != "Nulo":
+    st.write("---")
 
+    if not st.session_state.registrado:
+        st.warning("Debe registrar el cuestionario antes de generar el Anexo de Seguros y el Checklist de control.")
+    else:
+        col_btn1, col_btn2 = st.columns(2)
+
+        with col_btn1:
+            pdf_anexo = PDF()
+            pdf_anexo.add_page()
+            pdf_anexo.chapter_title("ANEXO DE SEGUROS")
+            pdf_anexo.chapter_body(TEXTOS_LEGALES["GENERAL_ENCABEZADO"])
+
+            if p1:
+                pdf_anexo.chapter_title("Seguro de Riesgos del Trabajo (ART)")
+                pdf_anexo.chapter_body(TEXTOS_LEGALES["ART"])
+
+                pdf_anexo.chapter_title("Seguro Colectivo de Vida Obligatorio")
+                pdf_anexo.chapter_body(TEXTOS_LEGALES["VO"])
+
+                pdf_anexo.chapter_title("Seguro de Accidentes Personales")
+                pdf_anexo.chapter_body(TEXTOS_LEGALES["AP"])
+
+            req_rc_separado = (((p5 or p7 or p8) or (p9 and not p10)) and not (p9 and p10))
+            if req_rc_separado:
+                suma_rc = "USD 100.000" if nivel == "Alto" else "USD 50.000"
+                pdf_anexo.chapter_title("Responsabilidad Civil Comprensiva")
+                pdf_anexo.chapter_body(TEXTOS_LEGALES["RC"] + f"\n\nSUMA ASEGURADA MINIMA REQUERIDA: {suma_rc}")
+
+            if p4:
+                pdf_anexo.chapter_title("Caución por Tenencia de Bienes")
+                pdf_anexo.chapter_body(TEXTOS_LEGALES["CAUCION"])
+
+            if p9 and p10:
+                pdf_anexo.chapter_title("Todo Riesgo Construcción y Montaje")
+                pdf_anexo.chapter_body(TEXTOS_LEGALES["TRCYM"])
+
+            if p3:
+                pdf_anexo.chapter_title("Responsabilidad Civil Automotor")
+                pdf_anexo.chapter_body(TEXTOS_LEGALES["AUTO"])
+
+            pdf_anexo.add_page()
+            pdf_anexo.chapter_body(TEXTOS_LEGALES["REQUISITOS_FINALES"])
+
+            st.download_button(
+                label="Generar Anexo de Seguros",
+                data=bytes(pdf_anexo.output()),
+                file_name=f"Anexo_Seguros_{nivel}.pdf",
+                mime="application/pdf"
+            )
+
+        with col_btn2:
+            req_trcym = p9 and p10
+            req_rc_separado = (((p5 or p7 or p8) or (p9 and not p10)) and not req_trcym)
+
+            seguros_checklist = []
+            if p1:
+                seguros_checklist.append("Seguro de Personas (ART / VO / AP)")
+            if req_rc_separado:
+                seguros_checklist.append("Responsabilidad Civil Comprensiva")
+            if req_trcym:
+                seguros_checklist.append("Todo Riesgo Construcción y Montaje")
+            if p4:
+                seguros_checklist.append("Caución por Tenencia de Bienes")
+            if p3:
+                seguros_checklist.append("Responsabilidad Civil Automotor")
+
+            chk = PDF()
+            chk.add_page()
+            chk.chapter_title("CHECKLIST DE CONTROL DE PÓLIZAS", 14)
+            chk.chapter_body("Seguros requeridos según Anexo generado por el Modelo de Determinación de Seguros a Proveedores", 11, 'B')
+
+            chk.ln(4)
+            chk.chapter_body("Resultado del modelo", 10, 'B')
+            chk.chapter_body(f"Nivel de riesgo determinado: {nivel}")
+            chk.chapter_body(f"Seguros requeridos: {', '.join(seguros_checklist)}")
+
+            chk.ln(4)
+            chk.chapter_body("Regla operativa", 10, 'B')
+            chk.chapter_body("Ante duda razonable sobre la aplicabilidad del seguro, SOFSA determinará su exigencia en función del riesgo identificado.")
+
+            chk.ln(4)
+            chk.chapter_body("Control documental general (aplica a todos los seguros)", 10, 'B')
+            chk.chapter_body("""
+            [] Aseguradora habilitada SSN  
+            [] Calificación de la aseguradora  
+            [] Vigencia durante toda la actividad  
+            [] Actividad asegurada compatible  
+            [] Certificado de cobertura vigente  
+            [] Libre deuda (si aplica)""")
+
+            if p1:
+                chk.ln(4)
+                chk.chapter_body("1. Seguro de Personas", 10, 'B')
+                chk.chapter_body("""
+                ART:  
+                [] Nómina de personal afectado  
+                [] Cláusula de no repetición""")
+                chk.chapter_body("""
+                Seguro Colectivo de Vida Obligatorio:  
+                [] Nómina de personal afectado""")
+                chk.chapter_body("""
+                Seguro de Accidentes Personales:
+                [] Suma asegurada correcta  
+                [] Nómina de personal afectado  
+                [] Cláusula de no repetición  
+                [] Cláusula SOFSA beneficiaria en primer término  
+                [] Cláusula de notificación previa""")
+
+            if req_rc_separado:
+                chk.ln(4)
+                chk.chapter_body("2. Responsabilidad Civil Comprensiva", 10, 'B')
+                chk.chapter_body("""
+                [] Suma asegurada correcta  
+                [] Cláusula de no repetición  
+                [] Asegurados adicionales  
+                [] Cláusula RC cruzada  
+                [] Cláusula de notificación previa""")
+                chk.chapter_body("""
+                Adicionales según actividad:  
+                [] Trabajos en altura  
+                [] Soldadura / oxicorte  
+                [] Izaje de carga  
+                [] Intervención eléctrica  
+                [] Maquinaria pesada  
+                [] Uso de armas  
+                [] Suministro de alimentos
+                """)
+
+            if req_trcym:
+                chk.ln(4)
+                chk.chapter_body("3. Todo Riesgo Construcción y Montaje", 10, 'B')
+                chk.chapter_body("""
+                [] Suma asegurada correcta  
+                [] Vigencia total de obra  
+                [] Incluye daños materiales  
+                [] Cláusula de no repetición  
+                [] Asegurados adicionales  
+                [] Cláusula RC cruzada  
+                [] Cláusula de notificación previa
+                """)
+                chk.chapter_body("""Cobertura de Responsabilidad Civil dentro de Todo Riesgo Construcción""", 10, 'B')
+                chk.chapter_body("""
+                [] Responsabilidad Civil expresamente incluida dentro de la póliza TRCyM  
+                [] Suma asegurada de RC acorde al nivel de riesgo  
+                [] Incluye adicionales según actividad (si corresponden)
+                """)
+
+            if p4:
+                chk.ln(4)
+                chk.chapter_body("4. Caución por Tenencia de Bienes", 10, 'B')
+                chk.chapter_body("""
+                [] Monto acorde al valor indicado en el pliego  
+                [] Vigencia total del contrato""")
+
+            if p3:
+                chk.ln(4)
+                chk.chapter_body("5. Responsabilidad Civil Automotor", 10, 'B')
+                chk.chapter_body("""
+                [] Vehículos declarados  
+                [] Cláusula de notificación previa  
+                [] Cláusula de no repetición
+                """)
+
+            st.download_button(
+                label="Generar Checklist de control",
+                data=bytes(chk.output()),
+                file_name=f"Checklist_Control_{nivel}.pdf",
+                mime="application/pdf"
+            )
