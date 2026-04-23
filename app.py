@@ -564,7 +564,7 @@ else:
                 fundamento,                        # Fundamento
                 ", ".join(seguros_activados),      # Seguros_Activados
                 "Sí" if nivel != "Nulo" else "No", # Anexo
-                "Sí" if nivel != "Nulo" else "No"  # Checklist
+                "Sí" if nivel != "Nulo" else "No", # Checklist
                 tipo_registro                      # Tipo_Registro
             ]
 
