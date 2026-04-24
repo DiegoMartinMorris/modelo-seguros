@@ -344,8 +344,8 @@ if not bloqueo and nivel != "Nulo":
             pdf_anexo.chapter_title("Seguro de Accidentes Personales")
             pdf_anexo.chapter_body(TEXTOS_LEGALES["AP"])
 
-        req_rc_separado = (((p5 or p7 or p8) or (p9 and not p10)) and not (p9 and p10))
-        if req_rc_separado:
+        req_rc_anexo = (p5 or p7 or p8 or p9)
+        if req_rc_anexo:
             suma_rc = "USD 100.000" if nivel == "Alto" else "USD 50.000"
             pdf_anexo.chapter_title("Responsabilidad Civil Comprensiva")
             pdf_anexo.chapter_body(TEXTOS_LEGALES["RC"] + f"\n\nSUMA ASEGURADA MINIMA REQUERIDA: {suma_rc}")
