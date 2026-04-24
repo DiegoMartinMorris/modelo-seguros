@@ -179,13 +179,11 @@ r1 = st.radio(
 )
 
 st.markdown("**Pregunta 2**")
-st.markdown("¿La actividad consiste exclusivamente en tareas administrativas o profesionales de oficina, realizadas sin ingreso a áreas operativas ni intervención técnica?")
-st.markdown("Ejemplos: consultoría, auditoría, capacitaciones teóricas, asesoramiento profesional")
 r2 = st.radio(
-    "Respuesta P2",
+    """¿La actividad consiste exclusivamente en tareas administrativas o profesionales de oficina, realizadas sin ingreso a áreas operativas ni intervención técnica?  
+Ejemplos: consultoría, auditoría, capacitaciones teóricas, asesoramiento profesional""",
     opciones,
-    index=0,
-    label_visibility="collapsed"
+    index=0
 )
 
 st.markdown("**Pregunta 3**")
@@ -211,67 +209,52 @@ r5 = st.radio(
 )
 
 st.markdown("**Pregunta 6**")
-st.markdown("¿La actividad corresponde a un trabajo menor de mantenimiento simple en SOFSA?")
-st.markdown("Para ser considerado trabajo menor, debe cumplir todas estas condiciones:")
-st.markdown("""
-- duración corta (menor a 1 mes de trabajo)
-- uso herramientas manuales simples
-- sin trabajo en altura, ni andamios
-- sin maquinaria pesada o equipos
-- sin intervención en infraestructura
-- sin afectar circulación ferroviaria o de pasajeros
-""")
-st.markdown("Ejemplos: pintura interior de oficina, reparación menor de mobiliario, cerrajería, etc.")
-st.caption("Ante duda, responder NO.")
 r6 = st.radio(
-    "Respuesta P6",
+    """¿La actividad corresponde a un trabajo menor de mantenimiento simple en SOFSA? Para ser considerado trabajo menor, debe cumplir todas estas condiciones:  
+• duración corta (menor a 1 mes de trabajo)  
+• uso herramientas manuales simples  
+• sin trabajo en altura, ni andamios  
+• sin maquinaria pesada o equipos  
+• sin intervención en infraestructura  
+• sin afectar circulación ferroviaria o de pasajeros  
+Ejemplos: (pintura interior de oficina, reparación menor de mobiliario, cerrajería, etc)""",
     opciones,
-    index=0,
-    label_visibility="collapsed"
+    index=0
 )
+st.caption("Ante duda, responder NO.")
 
 st.markdown("**Pregunta 7**")
-st.markdown("¿La actividad requiere uso de equipos, maquinaria o de herramientas complejas en la empresa?")
-st.markdown("Ejemplos: herramientas de corte y/o de calor y/o a explosión, equipos técnicos, maquinaria pesada.")
 r7 = st.radio(
-    "Respuesta P7",
+    """¿La actividad requiere uso de equipos, maquinaria o de herramientas complejas en la empresa?  
+Ejemplos: herramientas de corte y/o de calor y/o a explosión, equipos técnicos, maquinarias pesada""",
     opciones,
-    index=0,
-    label_visibility="collapsed"
+    index=0
 )
 
 st.markdown("**Pregunta 8**")
-st.markdown("¿La actividad incluye alguna de las siguientes tareas?")
-st.markdown("""
-- trabajos en altura
-- soldadura u oxicorte
-- izaje de cargas
-- intervención eléctrica
-- uso de maquinaria pesada
-- uso de armas de fuego
-- suministro de alimentos
-""")
 r8 = st.radio(
-    "Respuesta P8",
+    """¿La actividad incluye alguna de las siguientes tareas?  
+• trabajos en altura  
+• soldadura u oxicorte  
+• izaje de cargas  
+• intervención eléctrica  
+• uso de maquinaria pesada  
+• uso de armas de fuego  
+• suministro de alimentos""",
     opciones,
-    index=0,
-    label_visibility="collapsed"
+    index=0
 )
 
 st.markdown("**Pregunta 9**")
-st.markdown("¿La actividad implica la ejecución de una obra o el montaje/instalación de un sistema o equipo nuevo?")
-st.markdown("Incluye:")
-st.markdown("""
-- obras civiles
-- refacciones estructurales
-- instalación de equipos (montaje o desmontaje)
-- montaje de sistema eléctrico o mecánico
-""")
 r9 = st.radio(
-    "Respuesta P9",
+    """¿La actividad implica la ejecución de una obra o el montaje/instalación de un sistema o equipo nuevo?  
+Incluye:  
+• obras civiles  
+• refacciones estructurales  
+• instalación de equipos (montaje o desmontaje)  
+• montaje de sistema eléctrico o mecánico""",
     opciones,
-    index=0,
-    label_visibility="collapsed"
+    index=0
 )
 
 if r9 == "Sí":
@@ -407,6 +390,10 @@ if bloqueo:
             st.error("Debe completar nombre y apellido antes de registrar el intento.")
         elif not solped_limpio:
             st.error("Debe completar la Solicitud de Pedido (SOLPED) antes de registrar el intento.")
+        elif not solped_limpio.isdigit():
+            st.error("La SOLPED debe contener solo números.")
+        elif len(solped_limpio) != 8:
+            st.error("La SOLPED debe tener exactamente 8 dígitos.")
         else:
             tipo_registro = "BLOQUEADO"
             fila = [
@@ -445,6 +432,10 @@ else:
             st.error("Debe completar nombre y apellido antes de registrar el cuestionario.")
         elif not solped_limpio:
             st.error("Debe completar la Solicitud de Pedido (SOLPED) antes de registrar el cuestionario.")
+        elif not solped_limpio.isdigit():
+            st.error("La SOLPED debe contener solo números.")
+        elif len(solped_limpio) != 8:
+            st.error("La SOLPED debe tener exactamente 8 dígitos.")
         else:
             tipo_registro = "OK"
             fila = [
@@ -482,12 +473,13 @@ if not bloqueo and nivel != "Nulo":
     if not st.session_state.registrado:
         st.warning("Debe registrar el cuestionario antes de generar el Anexo de Seguros y el Checklist de control.")
     else:
+        solped_limpio = solped.strip()
         col_btn1, col_btn2 = st.columns(2)
 
         with col_btn1:
             pdf_anexo = PDF()
             pdf_anexo.add_page()
-            pdf_anexo.chapter_title("ANEXO DE SEGUROS")
+            pdf_anexo.chapter_title(f"ANEXO DE SEGUROS - SOLPED {solped_limpio}")
             pdf_anexo.chapter_body(TEXTOS_LEGALES["GENERAL_ENCABEZADO"])
 
             if p1:
@@ -524,7 +516,7 @@ if not bloqueo and nivel != "Nulo":
             st.download_button(
                 label="Generar Anexo de Seguros",
                 data=bytes(pdf_anexo.output()),
-                file_name=f"Anexo_Seguros_{nivel}.pdf",
+                file_name=f"Anexo_Seguros_SOLPED_{solped_limpio}_{nivel}.pdf",
                 mime="application/pdf"
             )
 
@@ -546,7 +538,7 @@ if not bloqueo and nivel != "Nulo":
 
             chk = PDF()
             chk.add_page()
-            chk.chapter_title("CHECKLIST DE CONTROL DE PÓLIZAS", 14)
+            chk.chapter_title(f"CHECKLIST DE CONTROL DE PÓLIZAS - SOLPED {solped_limpio}", 14)
             chk.chapter_body("Seguros requeridos según Anexo generado por el Modelo de Determinación de Seguros a Proveedores", 11, 'B')
 
             chk.ln(4)
@@ -644,6 +636,6 @@ if not bloqueo and nivel != "Nulo":
             st.download_button(
                 label="Generar Checklist de control",
                 data=bytes(chk.output()),
-                file_name=f"Checklist_Control_{nivel}.pdf",
+                file_name=f"Checklist_Control_SOLPED_{solped_limpio}_{nivel}.pdf",
                 mime="application/pdf"
             )
