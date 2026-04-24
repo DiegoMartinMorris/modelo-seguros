@@ -90,61 +90,61 @@ class PDF(FPDF):
 # --- TEXTOS LEGALES INTEGRALES ---
 TEXTOS_LEGALES = {
     "GENERAL_ENCABEZADO": "La Contratista deberá acreditar ante La SOFSA, con una antelación mínima de CINCO (5) días corridos al inicio de los trabajos y/o servicios, la contratación y vigencia de los seguros que resulten aplicables en función de la naturaleza y riesgos de la prestación, debiendo exigir el cumplimiento de esta obligación a los Subcontratistas que eventualmente participen en la ejecución de sus obligaciones contractuales, cuando la contratación así lo permita:  ",
-    "RC": """La Contratista deberá contratar y mantener vigente, por su exclusiva cuenta y cargo, un seguro de Responsabilidad Civil Comprensiva que deberá cubrir los daños a personas y/o bienes de terceros derivados directa o indirectamente de la ejecución de los trabajos y/o servicios contratados. En caso de insuficiencia o falta de cobertura, los daños deberán ser asumidos íntegramente por la Contratista. Ante el pago de un siniestro, la suma asegurada deberá ser repuesta dentro de los DIEZ (10) días de producido el mismo. 
-Coberturas adicionales (condicionales): 
-La póliza deberá incluir, cuando el riesgo asociado a la actividad lo requiera, los adicionales correspondientes a uso de grúas, izaje, trabajo e altura, trabajos de soldadura u oxicorte, carga y descarga, uso maquinaria, transporte de bienes, contaminación súbita y accidental, suministro de alimentos, uso de armas de fuego, uso de vehículos propios o no propios en exceso de su póliza específica y personas físicas bajo contrato. 
-Previo al inicio de las tareas, la Contratista deberá presentar certificado de cobertura y libre deuda emitido por la aseguradora. 
-Clausulas obligatorias: 
-Asegurado Adicional: Serán considerados asegurados y/o asegurados adicionales el titular de la póliza y/o la empresa CUIT 30-71068177-1 y/o ADMINISTRACION DE INFRAESTRUCTURAS FERROVIARIAS SOCIEDAD ANONIMA (ADIFSA) CUIT 30-71069599-3, y/o FERROCARRILES ARGENTINOS SOCIEDAD DEL ESTADO (FASE) - en proceso de transformación a Sociedad Anónima Unipersonal (SAU) - CUIT 30-71525570-3, y/o a SECRETARIA DE TRANSPORTE DE LA NACIÓN CUIT 30-71512720-9, y/o MINISTERIO DE ECONOMÍA CUIT 30-54667611-7, y/o al ESTADO NACIONAL, quienes serán coasegurados y/o asegurados adicionales a los efectos de la cobertura de la póliza, así como sus accionistas, directores, empleados y funcionarios. 
-Responsabilidad Civil Cruzada: Todos los sujetos mencionados precedentemente serán considerados terceros entre sí. 
-Cláusula de No Repetición: La Aseguradora renunciará expresamente a todo derecho de subrogación o repetición contra los sujetos mencionados precedentemente, manteniendo indemne a SOFSA frente a reclamos de terceros cubiertos por la póliza. 
+    "RC": """La Contratista deberá contratar y mantener vigente, por su exclusiva cuenta y cargo, un seguro de Responsabilidad Civil Comprensiva que deberá cubrir los daños a personas y/o bienes de terceros derivados directa o indirectamente de la ejecución de los trabajos y/o servicios contratados. En caso de insuficiencia o falta de cobertura, los daños deberán ser asumidos íntegramente por la Contratista. Ante el pago de un siniestro, la suma asegurada deberá ser repuesta dentro de los DIEZ (10) días de producido el mismo.  
+Coberturas adicionales (condicionales):  
+La póliza deberá incluir, cuando el riesgo asociado a la actividad lo requiera, los adicionales correspondientes a uso de grúas, izaje, trabajo e altura, trabajos de soldadura u oxicorte, carga y descarga, uso maquinaria, transporte de bienes, contaminación súbita y accidental, suministro de alimentos, uso de armas de fuego, uso de vehículos propios o no propios en exceso de su póliza específica y personas físicas bajo contrato.  
+Previo al inicio de las tareas, la Contratista deberá presentar certificado de cobertura y libre deuda emitido por la aseguradora.  
+Clausulas obligatorias:  
+Asegurado Adicional: Serán considerados asegurados y/o asegurados adicionales el titular de la póliza y/o la empresa CUIT 30-71068177-1 y/o ADMINISTRACION DE INFRAESTRUCTURAS FERROVIARIAS SOCIEDAD ANONIMA (ADIFSA) CUIT 30-71069599-3, y/o FERROCARRILES ARGENTINOS SOCIEDAD DEL ESTADO (FASE) - en proceso de transformación a Sociedad Anónima Unipersonal (SAU) - CUIT 30-71525570-3, y/o a SECRETARIA DE TRANSPORTE DE LA NACIÓN CUIT 30-71512720-9, y/o MINISTERIO DE ECONOMÍA CUIT 30-54667611-7, y/o al ESTADO NACIONAL, quienes serán coasegurados y/o asegurados adicionales a los efectos de la cobertura de la póliza, así como sus accionistas, directores, empleados y funcionarios.  
+Responsabilidad Civil Cruzada: Todos los sujetos mencionados precedentemente serán considerados terceros entre sí.  
+Cláusula de No Repetición: La Aseguradora renunciará expresamente a todo derecho de subrogación o repetición contra los sujetos mencionados precedentemente, manteniendo indemne a SOFSA frente a reclamos de terceros cubiertos por la póliza.  
 Notificación previa: La póliza no será anulada sin previo aviso por escrito a la OPERADORA FERROVIARIA SOCIEDAD ANONIMA, con domicilio en la Avda. Ramos Mejía Nº 1302, piso 4to. de la Ciudad Autónoma de Buenos Aires, con un plazo mínimo de 15 días corridos de anticipación.""",
-    "ART": """Para el personal que se encuentre en relación de dependencia, y que deba ingresar a predio de SOFSA en virtud de la presente contratación, la Contratista deberá contratar y mantener vigente, por su exclusiva cuenta y cargo, un seguro que cubra los riesgos del trabajo de acuerdo con la Ley Nº 24.557 de Riesgos del Trabajo, sus reformas y decretos reglamentarios. 
-Previo al inicio de las tareas, la Contratista deberá presentar certificado de cobertura emitido por la ART, incluyendo la nómina del personal afectado. 
-La póliza deberá incluir la siguiente cláusula: 
+    "ART": """Para el personal que se encuentre en relación de dependencia, y que deba ingresar a predio de SOFSA en virtud de la presente contratación, la Contratista deberá contratar y mantener vigente, por su exclusiva cuenta y cargo, un seguro que cubra los riesgos del trabajo de acuerdo con la Ley Nº 24.557 de Riesgos del Trabajo, sus reformas y decretos reglamentarios.  
+Previo al inicio de las tareas, la Contratista deberá presentar certificado de cobertura emitido por la ART, incluyendo la nómina del personal afectado.  
+La póliza deberá incluir la siguiente cláusula:  
 Cláusula de No Repetición: La Aseguradora de Riesgos del Trabajo debe renunciar en forma expresa a sus derechos de subrogación y/o a reclamar o iniciar toda acción de repetición o de regreso contra SOFSA, y/o FASE - en proceso de transformación a Sociedad Anónima Unipersonal (SAU) - y/o ADIFSA y/o SECRETARIA DE TRANSPORTE DE LA NACIÓN, y/o MINISTERIO DE ECONOMÍA, y/o ESTADO NACIONAL así como sus accionistas, directores, empleados y funcionarios, con motivo de las prestaciones a las que se vea obligada a otorgar o abonar al personal dependiente o ex dependiente de la Contratista, amparados por la cobertura del contrato de afiliación, por accidente de trabajo o enfermedades profesionales ocurridos o contraídos por el hecho o en ocasión del trabajo o en el trayecto entre el domicilio del trabajador y el lugar de trabajo.""",
-    "VO": """Para el personal que se encuentre en relación de dependencia, y que deba ingresar a predio de SOFSA en virtud de la presente contratación, la Contratista deberá contratar y mantener vigente, por su exclusiva cuenta y cargo, un seguro colectivo de vida obligatorio para cubrir la totalidad del personal afectado al trabajo y/o servicio contratado, según lo previsto en el Decreto Nº 1567/74. 
+    "VO": """Para el personal que se encuentre en relación de dependencia, y que deba ingresar a predio de SOFSA en virtud de la presente contratación, la Contratista deberá contratar y mantener vigente, por su exclusiva cuenta y cargo, un seguro colectivo de vida obligatorio para cubrir la totalidad del personal afectado al trabajo y/o servicio contratado, según lo previsto en el Decreto Nº 1567/74.  
 Previo al inicio de las tareas, deberá presentarse certificado de cobertura emitido por la aseguradora, con indicación de la nómina del personal cubierto.""",
-    "AP": """Para el personal que no se encuentre comprendido en el régimen de la Ley N° 24.557 de Riesgos del Trabajo, y que deba ingresar a predio de SOFSA en virtud de la presente contratación, la contratista deberá contratar y mantener vigente, por su exclusiva cuenta y cargo, un seguro de Accidentes Personales que cubra a todo el personal propio y de sus subcontratistas afectado a los trabajos y/o servicios. 
-La cobertura mínima por persona deberá contemplar: 
-Muerte e incapacidad permanente (total o parcial): USD 20.000 o su equivalente en moneda local. 
-Gastos médicos asistenciales: USD 2.000 o su equivalente en moneda local. 
-La póliza deberá designar a SOFSA como beneficiaria en primer término, exclusivamente a los efectos de garantizar su indemnidad frente a eventuales obligaciones legales derivadas del siniestro. 
-Previo al inicio de las tareas, la Contratista deberá presentar certificado de cobertura y libre deuda emitido por la aseguradora. 
-La póliza deberá incluir las siguientes cláusulas: 
+    "AP": """Para el personal que no se encuentre comprendido en el régimen de la Ley N° 24.557 de Riesgos del Trabajo, y que deba ingresar a predio de SOFSA en virtud de la presente contratación, la contratista deberá contratar y mantener vigente, por su exclusiva cuenta y cargo, un seguro de Accidentes Personales que cubra a todo el personal propio y de sus subcontratistas afectado a los trabajos y/o servicios.  
+La cobertura mínima por persona deberá contemplar:  
+Muerte e incapacidad permanente (total o parcial): USD 20.000 o su equivalente en moneda local.  
+Gastos médicos asistenciales: USD 2.000 o su equivalente en moneda local.  
+La póliza deberá designar a SOFSA como beneficiaria en primer término, exclusivamente a los efectos de garantizar su indemnidad frente a eventuales obligaciones legales derivadas del siniestro.  
+Previo al inicio de las tareas, la Contratista deberá presentar certificado de cobertura y libre deuda emitido por la aseguradora.  
+La póliza deberá incluir las siguientes cláusulas:  
 Notificación previa: La póliza no será anulada sin previo aviso por escrito a la OPERADORA FERROVIARIA SOCIEDAD ANONIMA, con un plazo mínimo de 15 días corridos de anticipación.""",
-    "CAUCION": """La Contratista deberá contratar una Póliza de Caución de Tenencia de Bienes, destinada a garantizar el retiro, transporte, traslado, tenencia, guarda, custodia, correcta conservación y posterior devolución de los Bienes y/o Equipos propiedad de SOFSA y/o bajo su responsabilidad. La cobertura deberá mantenerse vigente desde el momento del retiro de los bienes de las instalaciones de SOFSA o del lugar que ésta determine, durante todo el período de traslado, permanencia, manipulación, intervención técnica y custodia en instalaciones de la Contratista o de terceros, hasta su efectiva devolución y recepción conforme por parte de SOFSA. 
-La suma asegurada deberá ser equivalente a la suma establecida en el Pliego de Especificaciones Técnicas. 
+    "CAUCION": """La Contratista deberá contratar una Póliza de Caución de Tenencia de Bienes, destinada a garantizar el retiro, transporte, traslado, tenencia, guarda, custodia, correcta conservación y posterior devolución de los Bienes y/o Equipos propiedad de SOFSA y/o bajo su responsabilidad. La cobertura deberá mantenerse vigente desde el momento del retiro de los bienes de las instalaciones de SOFSA o del lugar que ésta determine, durante todo el período de traslado, permanencia, manipulación, intervención técnica y custodia en instalaciones de la Contratista o de terceros, hasta su efectiva devolución y recepción conforme por parte de SOFSA.  
+La suma asegurada deberá ser equivalente a la suma establecida en el Pliego de Especificaciones Técnicas.  
 La póliza deberá incluir la siguiente cláusula: Los actos, declaraciones, acciones u omisiones de la Contratista (Tomador), incluida la falta de pago del premio, no afectarán de modo alguno los derechos de SOFSA (Asegurada) frente al Asegurador, quien mantendrá íntegramente su obligación de responder en los términos de la póliza.""",
-    "TRCYM": """Cuando la contratación implique la ejecución de obras y/o trabajos de montaje, la Contratista deberá contratar y mantener vigente, por su exclusiva cuenta y cargo, un Seguro Todo Riesgo Construcción y/o Montaje que ampare la totalidad de la obra y/o montaje, incluyendo trabajos temporarios, materiales, equipos, instalaciones, obradores, maquinarias y bienes existentes y/o adyacentes afectados a la prestación. La cobertura deberá mantenerse vigente durante todo el período de ejecución, incluyendo los períodos de almacenaje, construcción y/o montaje, pruebas y mantenimiento, y hasta la recepción definitiva de la obra, debiendo actualizarse progresivamente la suma asegurada de modo tal que refleje en todo momento el valor total certificado. 
-La póliza deberá ser contratada a nombre conjunto de la Contratista y de SOFSA, y extenderse, cuando corresponda, a subcontratistas y/o proveedores que intervengan en la ejecución. 
-La Contratista deberá presentar a SOFSA certificado de cobertura y libre deuda emitido por la aseguradora. 
-Clausulas obligatorias: 
-Asegurado Adicional: Serán considerados asegurados y/o asegurados adicionales el titular de la póliza y/o LA OPERADORA FERROVIARIA SOCIEDAD ANONIMA (SOFSA) CUIT 30-71068177-1 y/o ADMINISTRACION DE INFRAESTRUCTURAS FERROVIARIAS SOCIEDAD ANONIMA (ADIFSA) CUIT 30-71069599-3, y/o FERROCARRILES ARGENTINOS SOCIEDAD DEL ESTADO (FASE) - en proceso de transformación a Sociedad Anónima Unipersonal (SAU) - CUIT 30-71525570-3, y/o a SECRETARIA DE TRANSPORTE DE LA NACIÓN CUIT 30-71512720-9, y/o MINISTERIO DE ECONOMÍA CUIT 30-54667611-7, y/o al ESTADO NACIONAL, quienes serán coasegurados y/o asegurados adicionales a los efectos de la cobertura de la póliza, así como sus accionistas, directores, empleados y funcionarios. 
-Responsabilidad Civil Cruzada: Todos los sujetos mencionados precedentemente serán considerados terceros entre sí. 
-Cláusula de No Repetición: La Aseguradora renunciará expresamente a todo derecho de subrogación o repetición contra los sujetos mencionados precedentemente, manteniendo indemne a SOFSA frente a reclamos de terceros cubiertos por la póliza. 
+    "TRCYM": """Cuando la contratación implique la ejecución de obras y/o trabajos de montaje, la Contratista deberá contratar y mantener vigente, por su exclusiva cuenta y cargo, un Seguro Todo Riesgo Construcción y/o Montaje que ampare la totalidad de la obra y/o montaje, incluyendo trabajos temporarios, materiales, equipos, instalaciones, obradores, maquinarias y bienes existentes y/o adyacentes afectados a la prestación. La cobertura deberá mantenerse vigente durante todo el período de ejecución, incluyendo los períodos de almacenaje, construcción y/o montaje, pruebas y mantenimiento, y hasta la recepción definitiva de la obra, debiendo actualizarse progresivamente la suma asegurada de modo tal que refleje en todo momento el valor total certificado.  
+La póliza deberá ser contratada a nombre conjunto de la Contratista y de SOFSA, y extenderse, cuando corresponda, a subcontratistas y/o proveedores que intervengan en la ejecución.  
+La Contratista deberá presentar a SOFSA certificado de cobertura y libre deuda emitido por la aseguradora.  
+Clausulas obligatorias:  
+Asegurado Adicional: Serán considerados asegurados y/o asegurados adicionales el titular de la póliza y/o LA OPERADORA FERROVIARIA SOCIEDAD ANONIMA (SOFSA) CUIT 30-71068177-1 y/o ADMINISTRACION DE INFRAESTRUCTURAS FERROVIARIAS SOCIEDAD ANONIMA (ADIFSA) CUIT 30-71069599-3, y/o FERROCARRILES ARGENTINOS SOCIEDAD DEL ESTADO (FASE) - en proceso de transformación a Sociedad Anónima Unipersonal (SAU) - CUIT 30-71525570-3, y/o a SECRETARIA DE TRANSPORTE DE LA NACIÓN CUIT 30-71512720-9, y/o MINISTERIO DE ECONOMÍA CUIT 30-54667611-7, y/o al ESTADO NACIONAL, quienes serán coasegurados y/o asegurados adicionales a los efectos de la cobertura de la póliza, así como sus accionistas, directores, empleados y funcionarios.  
+Responsabilidad Civil Cruzada: Todos los sujetos mencionados precedentemente serán considerados terceros entre sí.  
+Cláusula de No Repetición: La Aseguradora renunciará expresamente a todo derecho de subrogación o repetición contra los sujetos mencionados precedentemente, manteniendo indemne a SOFSA frente a reclamos de terceros cubiertos por la póliza.  
 Notificación previa: La póliza no será anulada sin previo aviso por escrito a la OPERADORA FERROVIARIA SOCIEDAD ANONIMA, con un plazo mínimo de 15 días corridos de anticipación.""",
-    "AUTO": """La Contratista deberá contratar y mantener vigente, por su exclusiva cuenta y cargo, un seguro Automotor para los vehículos a ser utilizados en virtud de la presente contratación, los cuales deberán contar, como mínimo, con la cobertura de Responsabilidad Civil - Seguro Voluntario, por la suma establecida por la Superintendencia de Seguros de la Nación. 
-La Contratista deberá presentar a SOFSA un certificado de cobertura y libre deuda emitido por la Aseguradora. 
-La póliza deberá incluir las siguientes cláusulas: 
-Cláusula de No Repetición: La Aseguradora renunciará expresamente a todo derecho de subrogación o repetición contra SOFSA, y/o FASE - en proceso de transformación a Sociedad Anónima Unipersonal (SAU) - y/o ADIFSA y/o SECRETARIA DE TRANSPORTE DE LA NACIÓN, y/o MINISTERIO DE ECONOMÍA, y/o ESTADO NACIONAL, así como sus accionistas, directores, empleados y funcionarios, con motivo de las sumas que se vea obligada a abonar por los riesgos amparados en la cobertura de la póliza. 
+    "AUTO": """La Contratista deberá contratar y mantener vigente, por su exclusiva cuenta y cargo, un seguro Automotor para los vehículos a ser utilizados en virtud de la presente contratación, los cuales deberán contar, como mínimo, con la cobertura de Responsabilidad Civil - Seguro Voluntario, por la suma establecida por la Superintendencia de Seguros de la Nación.  
+La Contratista deberá presentar a SOFSA un certificado de cobertura y libre deuda emitido por la Aseguradora.  
+La póliza deberá incluir las siguientes cláusulas:  
+Cláusula de No Repetición: La Aseguradora renunciará expresamente a todo derecho de subrogación o repetición contra SOFSA, y/o FASE - en proceso de transformación a Sociedad Anónima Unipersonal (SAU) - y/o ADIFSA y/o SECRETARIA DE TRANSPORTE DE LA NACIÓN, y/o MINISTERIO DE ECONOMÍA, y/o ESTADO NACIONAL, así como sus accionistas, directores, empleados y funcionarios, con motivo de las sumas que se vea obligada a abonar por los riesgos amparados en la cobertura de la póliza.  
 Notificación previa: La póliza no será anulada sin previo aviso por escrito a la OPERADORA FERROVIARIA SOCIEDAD ANONIMA, con domicilio en la Avda. Ramos Mejía Nº 1302, piso 4to. de la Ciudad Autónoma de Buenos Aires, con un plazo mínimo de 15 días corridos de anticipación.""",
-    "REQUISITOS_FINALES": """Otros Seguros: 
-SOFSA se reserva el derecho de exigir otros seguros que, en virtud de la contratación pudiesen ser requeridos. 
-Requisitos de los Seguros: 
-Las aseguradoras contratadas deberán cumplir con las siguientes condiciones: 
-1. Ser una aseguradora habilitada por la Superintendencia de Seguros de la Nación. 
-2. Estar calificada por alguna de las Calificadoras de Riesgo autorizadas por la Comisión Nacional de Valores (CNV). 
-Se tomará como válida la calificación del año en que se adjudique la contratación y/o la calificación del año inmediato anterior a la adjudicación. 
-La Contratista deberá presentar a la Licitante de manera mensual y consecutiva. 
-Vigencia de los Seguros: 
-Los seguros deberán mantenerse vigentes desde el inicio de cualquier actividad vinculada a la contratación, incluyendo tareas previas, y hasta la extinción total de las obligaciones contractuales de la Contratista, comprendiendo la recepción provisoria, el período de garantía y toda intervención posterior vinculada al contrato. 
-Incumplimientos en la Presentación de los Seguros: 
-Si la Contratista no presentase los seguros que correspondan de acuerdo con la naturaleza de la actividad, los trabajos y/o los servicios a ejecutar, o no cumpliera con alguno de los requisitos establecidos en el presente Anexo, no podrá iniciar ni continuar las tareas hasta tanto regularice dicha situación, siendo de su exclusiva responsabilidad las consecuencias que ello genere, sin que ello otorgue derecho a reclamo alguno contra la SOFSA. 
-Criterio de interpretación y aplicación: 
-Ante cualquier duda razonable respecto de la aplicabilidad, alcance o suficiencia de los seguros exigidos en el presente Anexo, SOFSA tendrá la facultad de definir el seguro que resulte exigible, en función de la naturaleza de la prestación y de los riesgos involucrados. 
-Responsabilidad: 
-La contratación de seguros por parte de la Contratista no limita ni reduce en modo alguno su responsabilidad contractual ni legal, siendo ésta responsable directa por todos los daños y obligaciones derivados de la ejecución del contrato. En consecuencia, la Contratista asumirá a su exclusivo cargo las franquicias, descubiertos, diferencias de suma asegurada y todo daño o reclamo que no resulte cubierto por las pólizas contratadas. 
+    "REQUISITOS_FINALES": """Otros Seguros:  
+SOFSA se reserva el derecho de exigir otros seguros que, en virtud de la contratación pudiesen ser requeridos.  
+Requisitos de los Seguros:  
+Las aseguradoras contratadas deberán cumplir con las siguientes condiciones:  
+1. Ser una aseguradora habilitada por la Superintendencia de Seguros de la Nación.  
+2. Estar calificada por alguna de las Calificadoras de Riesgo autorizadas por la Comisión Nacional de Valores (CNV).  
+Se tomará como válida la calificación del año en que se adjudique la contratación y/o la calificación del año inmediato anterior a la adjudicación.  
+La Contratista deberá presentar a la Licitante de manera mensual y consecutiva.  
+Vigencia de los Seguros:  
+Los seguros deberán mantenerse vigentes desde el inicio de cualquier actividad vinculada a la contratación, incluyendo tareas previas, y hasta la extinción total de las obligaciones contractuales de la Contratista, comprendiendo la recepción provisoria, el período de garantía y toda intervención posterior vinculada al contrato.  
+Incumplimientos en la Presentación de los Seguros:  
+Si la Contratista no presentase los seguros que correspondan de acuerdo con la naturaleza de la actividad, los trabajos y/o los servicios a ejecutar, o no cumpliera con alguno de los requisitos establecidos en el presente Anexo, no podrá iniciar ni continuar las tareas hasta tanto regularice dicha situación, siendo de su exclusiva responsabilidad las consecuencias que ello genere, sin que ello otorgue derecho a reclamo alguno contra la SOFSA.  
+Criterio de interpretación y aplicación:  
+Ante cualquier duda razonable respecto de la aplicabilidad, alcance o suficiencia de los seguros exigidos en el presente Anexo, SOFSA tendrá la facultad de definir el seguro que resulte exigible, en función de la naturaleza de la prestación y de los riesgos involucrados.  
+Responsabilidad:  
+La contratación de seguros por parte de la Contratista no limita ni reduce en modo alguno su responsabilidad contractual ni legal, siendo ésta responsable directa por todos los daños y obligaciones derivados de la ejecución del contrato. En consecuencia, la Contratista asumirá a su exclusivo cargo las franquicias, descubiertos, diferencias de suma asegurada y todo daño o reclamo que no resulte cubierto por las pólizas contratadas.  
 La Contratista mantendrá indemne a SOFSA, ADIFSA, FASE - en proceso de transformación a Sociedad Anónima Unipersonal (SAU)-, Secretaria de Transporte de la Nación, y/o al Estado Nacional, así como a sus accionistas, directores, empleados y funcionarios, frente a cualquier reclamo, suma, daño o gasto que deban afrontar con motivo de la ejecución contractual y/o del incumplimiento del régimen de seguros."""
 }
 
@@ -164,10 +164,10 @@ usuario = st.text_input(
 )
 
 solped = st.text_input(
-    "Solicitud de Pedido (SOLPED – N° SAP 8 dígitos)",
-    placeholder="Ej: 10023366"
+    "Solicitud de Pedido (SOLPED)",
+    placeholder="Ingrese la referencia de la contratación"
 )
-st.caption("Ingrese los 8 dígitos numéricos de la SOLPED asociada a la contratación.")
+st.caption("Ingrese el número de SOLPED asociado a la contratación.")
 
 opciones = ["No", "Sí"]
 
@@ -179,11 +179,13 @@ r1 = st.radio(
 )
 
 st.markdown("**Pregunta 2**")
+st.markdown("¿La actividad consiste exclusivamente en tareas administrativas o profesionales de oficina, realizadas sin ingreso a áreas operativas ni intervención técnica?")
+st.markdown("Ejemplos: consultoría, auditoría, capacitaciones teóricas, asesoramiento profesional")
 r2 = st.radio(
-    """¿La actividad consiste exclusivamente en tareas administrativas o profesionales de oficina, realizadas sin ingreso a áreas operativas ni intervención técnica? 
-Ejemplos: consultoría, auditoría, capacitaciones teóricas, asesoramiento profesional""",
+    "Respuesta P2",
     opciones,
-    index=0
+    index=0,
+    label_visibility="collapsed"
 )
 
 st.markdown("**Pregunta 3**")
@@ -209,52 +211,67 @@ r5 = st.radio(
 )
 
 st.markdown("**Pregunta 6**")
-r6 = st.radio(
-    """¿La actividad corresponde a un trabajo menor de mantenimiento simple en SOFSA? Para ser considerado trabajo menor, debe cumplir todas estas condiciones: 
-• duración corta (menor a 1 mes de trabajo) 
-• uso herramientas manuales simples 
-• sin trabajo en altura, ni andamios 
-• sin maquinaria pesada o equipos 
-• sin intervención en infraestructura 
-• sin afectar circulación ferroviaria o de pasajeros 
-Ejemplos: (pintura interior de oficina, reparación menor de mobiliario, cerrajería, etc)""",
-    opciones,
-    index=0
-)
+st.markdown("¿La actividad corresponde a un trabajo menor de mantenimiento simple en SOFSA?")
+st.markdown("Para ser considerado trabajo menor, debe cumplir todas estas condiciones:")
+st.markdown("""
+- duración corta (menor a 1 mes de trabajo)
+- uso herramientas manuales simples
+- sin trabajo en altura, ni andamios
+- sin maquinaria pesada o equipos
+- sin intervención en infraestructura
+- sin afectar circulación ferroviaria o de pasajeros
+""")
+st.markdown("Ejemplos: pintura interior de oficina, reparación menor de mobiliario, cerrajería, etc.")
 st.caption("Ante duda, responder NO.")
+r6 = st.radio(
+    "Respuesta P6",
+    opciones,
+    index=0,
+    label_visibility="collapsed"
+)
 
 st.markdown("**Pregunta 7**")
+st.markdown("¿La actividad requiere uso de equipos, maquinaria o de herramientas complejas en la empresa?")
+st.markdown("Ejemplos: herramientas de corte y/o de calor y/o a explosión, equipos técnicos, maquinaria pesada.")
 r7 = st.radio(
-    """¿La actividad requiere uso de equipos, maquinaria o de herramientas complejas en la empresa? 
-Ejemplos: herramientas de corte y/o de calor y/o a explosión, equipos técnicos, maquinarias pesada""",
+    "Respuesta P7",
     opciones,
-    index=0
+    index=0,
+    label_visibility="collapsed"
 )
 
 st.markdown("**Pregunta 8**")
+st.markdown("¿La actividad incluye alguna de las siguientes tareas?")
+st.markdown("""
+- trabajos en altura
+- soldadura u oxicorte
+- izaje de cargas
+- intervención eléctrica
+- uso de maquinaria pesada
+- uso de armas de fuego
+- suministro de alimentos
+""")
 r8 = st.radio(
-    """¿La actividad incluye alguna de las siguientes tareas? 
-• trabajos en altura 
-• soldadura u oxicorte 
-• izaje de cargas 
-• intervención eléctrica 
-• uso de maquinaria pesada 
-• uso de armas de fuego 
-• suministro de alimentos""",
+    "Respuesta P8",
     opciones,
-    index=0
+    index=0,
+    label_visibility="collapsed"
 )
 
 st.markdown("**Pregunta 9**")
+st.markdown("¿La actividad implica la ejecución de una obra o el montaje/instalación de un sistema o equipo nuevo?")
+st.markdown("Incluye:")
+st.markdown("""
+- obras civiles
+- refacciones estructurales
+- instalación de equipos (montaje o desmontaje)
+- montaje de sistema eléctrico o mecánico
+""")
 r9 = st.radio(
-    """¿La actividad implica la ejecución de una obra o el montaje/instalación de un sistema o equipo nuevo? 
-Incluye: 
-• obras civiles 
-• refacciones estructurales 
-• instalación de equipos (montaje o desmontaje) 
-• montaje de sistema eléctrico o mecánico""",
+    "Respuesta P9",
     opciones,
-    index=0
+    index=0,
+    label_visibility="collapsed"
 )
 
 if r9 == "Sí":
@@ -302,9 +319,9 @@ if p6 and (p2 or p4 or p5 or p7 or p8 or p9):
 
 # --- PIE DE PÁGINA INTERFAZ ---
 st.markdown("---")
-st.caption("""**Uso sugerido del resultado:** 
-• Incorporar el Anexo de Seguros como referencia en el pliego 
-• Utilizar el checklist de verificación documental previo al inicio de actividades 
+st.caption("""**Uso sugerido del resultado:**  
+• Incorporar el Anexo de Seguros como referencia en el pliego  
+• Utilizar el checklist de verificación documental previo al inicio de actividades  
 Si el servicio o contratación no se puede describir mediante el cuestionario, contactar a la Subgerencia de Administración de Riesgos (SAR).""")
 
 # Lógica de Riesgo + trazabilidad
@@ -390,25 +407,21 @@ if bloqueo:
             st.error("Debe completar nombre y apellido antes de registrar el intento.")
         elif not solped_limpio:
             st.error("Debe completar la Solicitud de Pedido (SOLPED) antes de registrar el intento.")
-        elif not solped_limpio.isdigit():
-            st.error("La SOLPED debe contener solo números.")
-        elif len(solped_limpio) != 8:
-            st.error("La SOLPED debe tener exactamente 8 dígitos.")
         else:
             tipo_registro = "BLOQUEADO"
             fila = [
-                fecha_hora_actual,
-                usuario_limpio,
-                solped_limpio,
-                r1, r2, r3, r4, r5, r6, r7, r8, r9, r10,
-                "Sí",
-                motivo_bloqueo,
-                "",
-                "",
-                "",
-                "No",
-                "No",
-                tipo_registro
+                fecha_hora_actual,          # FechaHora
+                usuario_limpio,             # Usuario
+                solped_limpio,              # SOLPED
+                r1, r2, r3, r4, r5, r6, r7, r8, r9, r10,   # P1 a P10
+                "Sí",                       # Bloqueo
+                motivo_bloqueo,             # Motivo_Bloqueo
+                "",                         # Nivel_Riesgo
+                "",                         # Fundamento
+                "",                         # Seguros_Activados
+                "No",                       # Anexo
+                "No",                       # Checklist
+                tipo_registro               # Tipo_Registro
             ]
 
             try:
@@ -432,25 +445,21 @@ else:
             st.error("Debe completar nombre y apellido antes de registrar el cuestionario.")
         elif not solped_limpio:
             st.error("Debe completar la Solicitud de Pedido (SOLPED) antes de registrar el cuestionario.")
-        elif not solped_limpio.isdigit():
-            st.error("La SOLPED debe contener solo números.")
-        elif len(solped_limpio) != 8:
-            st.error("La SOLPED debe tener exactamente 8 dígitos.")
         else:
             tipo_registro = "OK"
             fila = [
-                fecha_hora_actual,
-                usuario_limpio,
-                solped_limpio,
-                r1, r2, r3, r4, r5, r6, r7, r8, r9, r10,
-                "No",
-                "",
-                nivel,
-                fundamento,
-                ", ".join(seguros_activados),
-                "Sí" if nivel != "Nulo" else "No",
-                "Sí" if nivel != "Nulo" else "No",
-                tipo_registro
+                fecha_hora_actual,                  # FechaHora
+                usuario_limpio,                     # Usuario
+                solped_limpio,                      # SOLPED
+                r1, r2, r3, r4, r5, r6, r7, r8, r9, r10,   # P1 a P10
+                "No",                               # Bloqueo
+                "",                                 # Motivo_Bloqueo
+                nivel,                              # Nivel_Riesgo
+                fundamento,                         # Fundamento
+                ", ".join(seguros_activados),       # Seguros_Activados
+                "Sí" if nivel != "Nulo" else "No",  # Anexo
+                "Sí" if nivel != "Nulo" else "No",  # Checklist
+                tipo_registro                       # Tipo_Registro
             ]
 
             try:
@@ -473,14 +482,12 @@ if not bloqueo and nivel != "Nulo":
     if not st.session_state.registrado:
         st.warning("Debe registrar el cuestionario antes de generar el Anexo de Seguros y el Checklist de control.")
     else:
-        solped_limpio = solped.strip()
-
         col_btn1, col_btn2 = st.columns(2)
 
         with col_btn1:
             pdf_anexo = PDF()
             pdf_anexo.add_page()
-            pdf_anexo.chapter_title(f"ANEXO DE SEGUROS — SOLPED {solped_limpio}")
+            pdf_anexo.chapter_title("ANEXO DE SEGUROS")
             pdf_anexo.chapter_body(TEXTOS_LEGALES["GENERAL_ENCABEZADO"])
 
             if p1:
@@ -517,7 +524,7 @@ if not bloqueo and nivel != "Nulo":
             st.download_button(
                 label="Generar Anexo de Seguros",
                 data=bytes(pdf_anexo.output()),
-                file_name=f"Anexo_Seguros_SOLPED_{solped_limpio}_{nivel}.pdf",
+                file_name=f"Anexo_Seguros_{nivel}.pdf",
                 mime="application/pdf"
             )
 
@@ -539,7 +546,7 @@ if not bloqueo and nivel != "Nulo":
 
             chk = PDF()
             chk.add_page()
-            chk.chapter_title(f"CHECKLIST DE CONTROL DE PÓLIZAS — SOLPED {solped_limpio}", 14)
+            chk.chapter_title("CHECKLIST DE CONTROL DE PÓLIZAS", 14)
             chk.chapter_body("Seguros requeridos según Anexo generado por el Modelo de Determinación de Seguros a Proveedores", 11, 'B')
 
             chk.ln(4)
@@ -554,48 +561,48 @@ if not bloqueo and nivel != "Nulo":
             chk.ln(4)
             chk.chapter_body("Control documental general (aplica a todos los seguros)", 10, 'B')
             chk.chapter_body("""
-            [] Aseguradora habilitada SSN 
-            [] Calificación de la aseguradora 
-            [] Vigencia durante toda la actividad 
-            [] Actividad asegurada compatible 
-            [] Certificado de cobertura vigente 
+            [] Aseguradora habilitada SSN  
+            [] Calificación de la aseguradora  
+            [] Vigencia durante toda la actividad  
+            [] Actividad asegurada compatible  
+            [] Certificado de cobertura vigente  
             [] Libre deuda (si aplica)""")
 
             if p1:
                 chk.ln(4)
                 chk.chapter_body("1. Seguro de Personas", 10, 'B')
                 chk.chapter_body("""
-                ART: 
-                [] Nómina de personal afectado 
+                ART:  
+                [] Nómina de personal afectado  
                 [] Cláusula de no repetición""")
                 chk.chapter_body("""
-                Seguro Colectivo de Vida Obligatorio: 
+                Seguro Colectivo de Vida Obligatorio:  
                 [] Nómina de personal afectado""")
                 chk.chapter_body("""
                 Seguro de Accidentes Personales:
-                [] Suma asegurada correcta 
-                [] Nómina de personal afectado 
-                [] Cláusula de no repetición 
-                [] Cláusula SOFSA beneficiaria en primer término 
+                [] Suma asegurada correcta  
+                [] Nómina de personal afectado  
+                [] Cláusula de no repetición  
+                [] Cláusula SOFSA beneficiaria en primer término  
                 [] Cláusula de notificación previa""")
 
             if req_rc_separado:
                 chk.ln(4)
                 chk.chapter_body("2. Responsabilidad Civil Comprensiva", 10, 'B')
                 chk.chapter_body("""
-                [] Suma asegurada correcta 
-                [] Cláusula de no repetición 
-                [] Asegurados adicionales 
-                [] Cláusula RC cruzada 
+                [] Suma asegurada correcta  
+                [] Cláusula de no repetición  
+                [] Asegurados adicionales  
+                [] Cláusula RC cruzada  
                 [] Cláusula de notificación previa""")
                 chk.chapter_body("""
-                Adicionales según actividad: 
-                [] Trabajos en altura 
-                [] Soldadura / oxicorte 
-                [] Izaje de carga 
-                [] Intervención eléctrica 
-                [] Maquinaria pesada 
-                [] Uso de armas 
+                Adicionales según actividad:  
+                [] Trabajos en altura  
+                [] Soldadura / oxicorte  
+                [] Izaje de carga  
+                [] Intervención eléctrica  
+                [] Maquinaria pesada  
+                [] Uso de armas  
                 [] Suministro de alimentos
                 """)
 
@@ -603,18 +610,18 @@ if not bloqueo and nivel != "Nulo":
                 chk.ln(4)
                 chk.chapter_body("3. Todo Riesgo Construcción y Montaje", 10, 'B')
                 chk.chapter_body("""
-                [] Suma asegurada correcta 
-                [] Vigencia total de obra 
-                [] Incluye daños materiales 
-                [] Cláusula de no repetición 
-                [] Asegurados adicionales 
-                [] Cláusula RC cruzada 
+                [] Suma asegurada correcta  
+                [] Vigencia total de obra  
+                [] Incluye daños materiales  
+                [] Cláusula de no repetición  
+                [] Asegurados adicionales  
+                [] Cláusula RC cruzada  
                 [] Cláusula de notificación previa
                 """)
                 chk.chapter_body("""Cobertura de Responsabilidad Civil dentro de Todo Riesgo Construcción""", 10, 'B')
                 chk.chapter_body("""
-                [] Responsabilidad Civil expresamente incluida dentro de la póliza TRCyM 
-                [] Suma asegurada de RC acorde al nivel de riesgo 
+                [] Responsabilidad Civil expresamente incluida dentro de la póliza TRCyM  
+                [] Suma asegurada de RC acorde al nivel de riesgo  
                 [] Incluye adicionales según actividad (si corresponden)
                 """)
 
@@ -622,21 +629,21 @@ if not bloqueo and nivel != "Nulo":
                 chk.ln(4)
                 chk.chapter_body("4. Caución por Tenencia de Bienes", 10, 'B')
                 chk.chapter_body("""
-                [] Monto acorde al valor indicado en el pliego 
+                [] Monto acorde al valor indicado en el pliego  
                 [] Vigencia total del contrato""")
 
             if p3:
                 chk.ln(4)
                 chk.chapter_body("5. Responsabilidad Civil Automotor", 10, 'B')
                 chk.chapter_body("""
-                [] Vehículos declarados 
-                [] Cláusula de notificación previa 
+                [] Vehículos declarados  
+                [] Cláusula de notificación previa  
                 [] Cláusula de no repetición
                 """)
 
             st.download_button(
                 label="Generar Checklist de control",
                 data=bytes(chk.output()),
-                file_name=f"Checklist_Control_SOLPED_{solped_limpio}_{nivel}.pdf",
+                file_name=f"Checklist_Control_{nivel}.pdf",
                 mime="application/pdf"
             )
